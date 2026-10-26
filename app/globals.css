@@ -220,7 +220,7 @@ html {
 }
 .pj-tilt {
   transform-style: preserve-3d;
-  transform: rotateX(6deg) rotateY(-14deg);
+  transform: rotateX(4deg) rotateY(-10deg);
   will-change: transform;
 }
 .pj-flat .pj-tilt {

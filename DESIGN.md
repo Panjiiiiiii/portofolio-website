@@ -6,12 +6,12 @@ Design Read: personal developer portfolio for hiring managers and freelance clie
 
 ## Direction in one sentence
 
-A dark, scroll-driven film of one developer's work: oversized NJOEL type, three floating 3D objects, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Evidence carries the page.
+A dark, scroll-driven film of one developer's work: oversized NJOEL type, three floating 3D objects, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Projects carries the page.
 
 ## Why these dials
 
 - ENERGY 3: the portfolio is the product. The hero has to say hello loudly, once. Everything after it recedes.
-- RHYTHM 3: sections must not share one composition. Hero is centered type plus 3D, About is an asymmetric photo and text split, Stack is a marquee over uneven cards, Evidence is a full-width list with a floating preview, Experience is a stepped timeline, Contact is a heatmap strip plus a large CTA, the footer is a parallax reveal.
+- RHYTHM 3: sections must not share one composition. Hero is oversized type with three floating 3D objects, About is an asymmetric photo and text split, Stack is a logo marquee over uneven cards, Projects is a pinned stage with one project per scroll step, Experience is a stepped timeline, Contact is a heatmap strip plus a large CTA, the footer is a parallax reveal.
 - MOTION 3: the brief asks for cinematic. Max one signature motion per section, so choreography stays readable.
 
 ## Palette (tokens from the brief, not negotiable)
@@ -19,7 +19,7 @@ A dark, scroll-driven film of one developer's work: oversized NJOEL type, three 
 | Role | Hex | Reason |
 |---|---|---|
 | Background | `#09090B` | Near-black with a slight cool tint. Dark only: cinematic mood and a developer audience, not a default. |
-| Surface | `#131316` | One step up for cards, dock, modal, heatmap level 0. |
+| Surface | `#131316` | One step up for cards, dock, the Projects stage, heatmap level 0. |
 | Text | `#ECEAF2` | Soft off-white, avoids pure-white glare on near-black. |
 | Muted | `#8B8A96` | Labels, secondary copy. 5.8:1 on background. |
 | Line | `#25242C` | Hairlines, borders, section rules. |
@@ -57,10 +57,10 @@ Two repeated gestures:
 
 - Tokens: durations 200 / 400 / 700ms only. Ease set: `power3.out` for entrances, `power2.inOut` for transitions, `expo.out` for kinetic type. Exits run at about 65% of the entrance.
 - One signature motion per section:
-  - Hero: kinetic NJOEL letter reveal, cursor-reactive weight shift, 3D glyph parallax.
+  - Hero: kinetic NJOEL letter reveal, plus three floating 3D objects (the </> glyph, a gamepad, a racing helmet) in one canvas with scroll parallax at three depths.
   - About: portrait grayscale to color.
-  - Stack: marquee.
-  - Evidence: directional hover with a cursor-following preview, and a draggable gallery in the modal.
+  - Stack: logos-only marquee.
+  - Projects: a sticky stage, one project per scroll step, clip-reveal on a CSS 3D mockup with staggered text and a segmented progress line. Below 768px an accordion. Reduced motion: plain stacked blocks.
   - Experience: scroll-driven step reveal on the timeline.
   - GitHub: heatmap cells reveal once.
   - CTA/Footer: magnetic buttons and parallax footer reveal.
@@ -83,7 +83,7 @@ One set only: Phosphor (regular weight). It has the brand marks needed for Linke
 ## Imagery
 
 - Portrait: the real photo, grayscale to color, 0px corners, 1px line border.
-- Project screenshots: only inside the project gallery, unmodified.
+- Project screenshots: one per project, shown unmodified inside a CSS mockup (laptop) or as a tilted plane when the image already has a phone bezel or browser chrome.
 - No stock images, no generated faces, no illustrations, no decorative imagery.
 - Logo and favicon: a plain NJOEL wordmark set in Bricolage Grotesque.
 
@@ -112,7 +112,7 @@ English only, kept in `/data` so a second language can be added. Plain, specific
 - Bricolage Grotesque for display: character at large sizes.
 - Mono for labels: signals data and index, kept small.
 - Marquee in Stack: shows the stack at a glance without percentage bars.
-- Floating preview in Evidence: lets the work lead without opening each project.
+- Pinned stage in Projects: one project at a time lets each mockup lead, with no overlay or new page.
 - Stepped timeline: Osmo-style, handles overlapping periods as parallel items.
 - Bottom dock under 768px: one-thumb navigation, 44px targets.
 - Phosphor icons: one set with brand marks, no library-default look.

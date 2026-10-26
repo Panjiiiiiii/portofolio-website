@@ -29,7 +29,7 @@ Kept from the skill: Dark Mode (OLED) as the style family, spacious density, the
 | Role | Hex | CSS variable | Tailwind name | Use |
 |---|---|---|---|---|
 | Background | `#09090B` | `--color-bg` | `bg` | Page |
-| Surface | `#131316` | `--color-surface` | `surface` | Cards, dock, modal, heatmap level 0, preloader |
+| Surface | `#131316` | `--color-surface` | `surface` | Cards, dock, Projects stage, heatmap level 0, preloader |
 | Text | `#ECEAF2` | `--color-fg` | `fg` | Primary text |
 | Muted | `#8B8A96` | `--color-muted` | `muted` | Labels, secondary copy (5.8:1 on bg) |
 | Line | `#25242C` | `--color-line` | `line` | Borders, rules, dividers |
@@ -57,7 +57,7 @@ Loaded with `next/font/google`, `display: swap`, subsets `latin`. Scale: 12, 14,
 | Element | Radius |
 |---|---|
 | Buttons, tags, dock items | 9999px |
-| Cards, project images, modal, toast | 4px |
+| Cards, project images, mockup frames, toast | 4px |
 | Portrait frame, section lines, timeline rules | 0 |
 
 ## Spacing (density 3, spacious)
@@ -66,7 +66,7 @@ Loaded with `next/font/google`, `display: swap`, subsets `latin`. Scale: 12, 14,
 
 ## Elevation and layers
 
-No box shadows. Elevation = surface color + 1px `line` border. Z-index scale: content 0, sticky nav 40, dock 40, modal 100, toast 110, preloader 1000, skip link 1100.
+No box shadows, with one exception: the soft contact shadow under the Projects mockups. Elevation = surface color + 1px `line` border. Z-index scale: content 0, sticky nav 40, dock 40, modal 100, toast 110, preloader 1000, skip link 1100.
 
 ## Components
 
@@ -84,7 +84,7 @@ No box shadows. Elevation = surface color + 1px `line` border. Z-index scale: co
 
 **Dock (below 768px):** fixed bottom, `surface`, 1px `line` top, 6 items, icon 22px plus 11px label (labels use `fg` and `muted` only, never accent text), 44px+ targets, safe-area inset padding. Active item: accent 2px top indicator and `fg` text.
 
-**Modal (project detail):** `surface`, 4px radius, `role="dialog"`, `aria-modal`, focus trap, ESC closes, focus returns to the trigger. Backdrop is solid `#09090B` at 92% opacity, no blur.
+**Projects stage (desktop):** `surface` background, sticky (not pinned) for about 90vh of scroll per project, one project per step. `role="tablist"` index (01-05) with arrow, Home and End keys, panels are `role="tabpanel"` and `inert` unless active. Mockups are CSS 3D (laptop frame, or a plain tilted plane when the screenshot already has a bezel or browser chrome). The only shadow on the site is the soft contact shadow under these mockups. Below 768px an accordion with real buttons (`aria-expanded`, `aria-controls`, 44px rows). Reduced motion: stacked blocks, no sticky.
 
 **Toast:** `surface`, 1px `line`, 4px radius, `role="status"`, `aria-live="polite"`, auto-dismiss at 3 to 4s, does not steal focus.
 
@@ -96,7 +96,7 @@ Framework notes kept from the skill: use `gsap.matchMedia` with `(prefers-reduce
 
 ## Page pattern (replaces "FAQ/Documentation")
 
-Single route, seven chapters: Hero, About, Specialty, Evidence, Experience, GitHub contributions (inside Contact anchor), CTA and footer. Composition changes per section (RHYTHM 3).
+Single route, seven chapters: Hero, About, Specialty, Projects, Experience, GitHub contributions (inside Contact anchor), CTA and footer. Composition changes per section (RHYTHM 3).
 
 ## Anti-patterns
 
@@ -118,7 +118,7 @@ Single route, seven chapters: Hero, About, Specialty, Evidence, Experience, GitH
 - [ ] Text contrast 4.5:1 minimum, accent never used for small body text
 - [ ] Visible focus on every interactive element, focus not hidden behind fixed nav or dock
 - [ ] `prefers-reduced-motion` respected (Lenis, marquee, parallax, 3D, grayscale transition)
-- [ ] Draggable gallery has keyboard and button alternatives
+- [ ] Projects stage: tabs are keyboard operable (arrows, Home, End), inactive panels are inert, accordion uses real buttons with aria-expanded
 - [ ] Responsive at 375, 768, 1024, 1440, no horizontal overflow
 - [ ] Fixed nav and dock reserve padding for underlying content
 - [ ] Images have width, height, alt, and lazy-load below the fold

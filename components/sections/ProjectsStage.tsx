@@ -100,8 +100,8 @@ export function ProjectsStage({ items }: { items: ProjectItem[] }) {
           const el = panels.current[current.current]?.querySelector<HTMLElement>("[data-pj-tilt]");
           if (!el) return;
           gsap.to(el, {
-            rotationY: -14 + stepProgress * 8 + pointer.x * 4,
-            rotationX: 6 - stepProgress * 3 - pointer.y * 3,
+            rotationY: -10 + stepProgress * 6 + pointer.x * 3,
+            rotationX: 4 - stepProgress * 2 - pointer.y * 2,
             duration: 0.6,
             ease: "power3.out",
             overwrite: "auto",
