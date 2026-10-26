@@ -15,9 +15,13 @@ export function getLenis() {
  * Scrolls to an in-page hash. Uses Lenis when active, native smooth scroll otherwise.
  * Pushes a history entry so the back button returns to the previous section.
  */
+// Old hashes that still work after a section was renamed.
+const ALIASES: Record<string, string> = { evidence: "projects" };
+
 export function scrollToHash(hash: string, opts: { push?: boolean } = {}) {
   const { push = true } = opts;
-  const id = hash.replace(/^#/, "");
+  const raw = hash.replace(/^#/, "");
+  const id = ALIASES[raw] ?? raw;
   const target = id === "home" || id === "" ? document.documentElement : document.getElementById(id);
   if (!target) return;
 

@@ -175,67 +175,136 @@ html[data-preloaded] #preloader {
   clip-path: inset(50%);
 }
 
-/* Evidence rows: fill sweeps in from the side the pointer entered */
-.row-fill {
-  transform: scaleY(0);
-  transform-origin: var(--fill-origin, top);
-  transition: transform 400ms var(--ease-out-power3);
-}
-.project-row {
-  transition: border-color 200ms ease-out;
-}
-.row-index {
-  transition: color 200ms ease-out;
-}
-@media (hover: hover) {
-  .project-row:hover .row-fill,
-  .project-row:focus-within .row-fill {
-    transform: scaleY(1);
-  }
-  .project-row:hover,
-  .project-row:hover + .project-row {
-    border-top-color: var(--color-accent);
-  }
-  .project-row:hover .row-index,
-  .project-row:focus-within .row-index {
-    color: var(--color-fg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .row-fill {
-    transition: none;
-  }
-}
-
-/* Project dialog */
+/* Keep the page from shifting when something locks scrolling */
 html {
   scrollbar-gutter: stable;
 }
-html.modal-open {
-  overflow: hidden;
+
+/* Projects: three presentations of the same data, switched by CSS only. */
+.pj-stage-wrap,
+.pj-accordion,
+.pj-stacked {
+  display: none;
 }
-dialog.project-dialog::backdrop {
-  background: var(--color-bg);
-}
-dialog.project-dialog[open] .modal-panel {
-  animation: modal-in 400ms var(--ease-out-power3) both;
-}
-@keyframes modal-in {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
+@media (min-width: 768px) and (prefers-reduced-motion: no-preference) {
+  .pj-stage-wrap {
+    display: block;
   }
-  to {
-    opacity: 1;
-    transform: none;
+}
+@media (max-width: 767px) and (prefers-reduced-motion: no-preference) {
+  .pj-accordion {
+    display: block;
   }
 }
 @media (prefers-reduced-motion: reduce) {
-  dialog.project-dialog[open] .modal-panel {
-    animation: none;
+  .pj-stacked {
+    display: block;
   }
 }
 
+/* Stage panels: only the active one is visible. GSAP takes over during a change. */
+.pj-panel {
+  visibility: hidden;
+}
+.pj-panel[data-active="true"] {
+  visibility: visible;
+}
+
+/* Mockups built with CSS 3D. The screenshot is displayed, never edited. */
+.pj-device-wrap {
+  position: relative;
+  --pj-h: min(56vh, 520px);
+}
+.pj-persp {
+  perspective: 1600px;
+}
+.pj-tilt {
+  transform-style: preserve-3d;
+  transform: rotateX(6deg) rotateY(-14deg);
+  will-change: transform;
+}
+.pj-flat .pj-tilt {
+  transform: none;
+}
+.pj-flat .pj-device-wrap {
+  --pj-h: min(60vh, 420px);
+}
+.pj-device {
+  position: relative;
+  width: min(100%, calc(var(--pj-h) * var(--ar)));
+  margin-inline: auto;
+}
+.pj-lid {
+  position: relative;
+  padding: 10px 10px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 4px 4px 0 0;
+  background: #0c0c0f;
+}
+.pj-cam {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--color-line);
+  transform: translateX(-50%);
+}
+.pj-screen {
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  background: #fff;
+}
+.pj-base {
+  position: relative;
+  width: 112%;
+  height: 12px;
+  margin-left: -6%;
+  border: 1px solid var(--color-line);
+  border-radius: 0 0 4px 4px;
+  background: #1b1b21;
+}
+.pj-base::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 18%;
+  height: 4px;
+  border-radius: 0 0 4px 4px;
+  background: #0c0c0f;
+  transform: translateX(-50%);
+}
+.pj-plane-img {
+  aspect-ratio: var(--ar);
+  overflow: hidden;
+  border: 1px solid var(--color-line);
+  border-radius: 4px;
+  background: #fff;
+  box-shadow: 0 30px 60px -24px rgb(0 0 0 / 0.8);
+}
+/* Soft contact shadow under the laptop. A mockup effect only; the rest of the site has no shadows. */
+.pj-shadow {
+  position: absolute;
+  right: 10%;
+  bottom: -26px;
+  left: 10%;
+  height: 34px;
+  border-radius: 9999px;
+  background: rgb(0 0 0 / 0.7);
+  filter: blur(22px);
+}
+
+/* Accordion height animation */
+.pj-acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms var(--ease-out-power3);
+}
+.pj-acc-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
 /* Experience timeline. Default = final state (no JS, reduced motion). */
 .tl-node {
   background: var(--color-accent);

@@ -2,10 +2,10 @@ import { PageReadyProvider } from "@/components/providers/PageReady";
 import { SmoothScroll } from "@/components/providers/SmoothScroll";
 import { About } from "@/components/sections/About";
 import { Contact } from "@/components/sections/Contact";
-import { Evidence } from "@/components/sections/Evidence";
 import { Experience } from "@/components/sections/Experience";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
+import { Projects } from "@/components/sections/Projects";
 import { Stack } from "@/components/sections/Stack";
 import { Preloader } from "@/components/ui/Preloader";
 import { SiteNav } from "@/components/ui/SiteNav";
@@ -53,7 +53,7 @@ export default function Home() {
           <Hero />
           <About />
           <Stack />
-          <Evidence />
+          <Projects />
           <Experience />
           <Contact />
         </main>

@@ -13,12 +13,12 @@ import { navItems } from "@/data/site";
 import { ScrollLink } from "./ScrollLink";
 
 // Icon relevance: house = home, user = about, stack = tech stack,
-// folder = project evidence, briefcase = experience, envelope = contact.
+// folder = projects, briefcase = experience, envelope = contact.
 const icons: Record<string, React.ReactNode> = {
   home: <House size={22} weight="regular" aria-hidden />,
   about: <User size={22} weight="regular" aria-hidden />,
   stack: <Stack size={22} weight="regular" aria-hidden />,
-  evidence: <FolderSimple size={22} weight="regular" aria-hidden />,
+  projects: <FolderSimple size={22} weight="regular" aria-hidden />,
   experience: <Briefcase size={22} weight="regular" aria-hidden />,
   contact: <EnvelopeSimple size={22} weight="regular" aria-hidden />,
 };

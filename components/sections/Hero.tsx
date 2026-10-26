@@ -91,7 +91,7 @@ export function Hero() {
           </p>
           <p className="mt-4 text-lg text-fg md:text-xl">{hero.tagline}</p>
           <div className="mt-8 flex flex-wrap gap-3">
-            <ButtonLink href="#evidence">{hero.ctaEvidence}</ButtonLink>
+            <ButtonLink href="#projects">{hero.ctaProjects}</ButtonLink>
             <ButtonLink href="#contact" variant="secondary">
               {hero.ctaContact}
             </ButtonLink>

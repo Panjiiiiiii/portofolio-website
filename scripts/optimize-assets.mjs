@@ -8,13 +8,14 @@ import path from "node:path";
 const root = process.cwd();
 const out = (...p) => path.join(root, "public", ...p);
 
-// Asset folder name -> project slug used in /data/projects.ts
-const projectFolders = {
-  "w-spread-app": "w-spread",
-  "sugar-measurer-website": "sugar-measurer",
-  "sidigs-app": "sidigs-app",
-  "smes-website": "sme-website",
-  "exam-website": "ukk-exam-website",
+// One screenshot per project. slug -> { folder under assets/project-galery, file }.
+// To change the picture a project uses, change `file` and run `npm run assets`.
+const projectImages = {
+  "w-spread": { folder: "w-spread-app", file: "2.png" },
+  "sugar-measurer": { folder: "sugar-measurer-website", file: "1.png" },
+  "sidigs-app": { folder: "sidigs-app", file: "3.png" },
+  "sme-website": { folder: "smes-website", file: "1.png" },
+  "ukk-exam-website": { folder: "exam-website", file: "1.png" },
 };
 
 const MAX_WIDTH = 1920;
@@ -37,7 +38,6 @@ async function writeWebp(pipeline, dest, quality) {
 const photoSrc = path.join(root, "assets", "photo-personal.jpeg");
 try {
   await fs.access(photoSrc);
-  // 4:5 crop that ends above chest level, so the lanyard ID card (starts near y=2590) is outside it.
   // The card holder's badge starts near y=2500, so the crop stops at y=2380 with margin.
   const crop = { left: 1032, top: 1300, width: 864, height: 1080 };
   const pipeline = sharp(photoSrc)
@@ -53,29 +53,23 @@ try {
   console.warn("MISSING: assets/photo-personal.jpeg (a placeholder will render)");
 }
 
-for (const [folder, slug] of Object.entries(projectFolders)) {
-  const dir = path.join(root, "assets", "project-galery", folder);
-  let files = [];
+// Start clean so only the chosen screenshots stay in /public/projects.
+await fs.rm(out("projects"), { recursive: true, force: true });
+
+for (const [slug, { folder, file }] of Object.entries(projectImages)) {
+  const src = path.join(root, "assets", "project-galery", folder, file);
   try {
-    files = (await fs.readdir(dir))
-      .filter((f) => /\.(png|jpe?g|webp)$/i.test(f))
-      .sort((a, b) => parseInt(a) - parseInt(b));
+    await fs.access(src);
   } catch {
-    console.warn(`MISSING: ${dir}`);
+    console.warn(`MISSING: ${src}`);
     continue;
   }
-  manifest[slug] = [];
-  let i = 1;
-  for (const f of files) {
-    const name = String(i).padStart(2, "0") + ".webp";
-    const img = sharp(path.join(dir, f)).rotate();
-    const { width } = await img.metadata();
-    const pipeline = width > MAX_WIDTH ? img.resize({ width: MAX_WIDTH }) : img;
-    const info = await writeWebp(pipeline, out("projects", slug, name), 84);
-    manifest[slug].push({ src: `/projects/${slug}/${name}`, ...info });
-    i++;
-  }
-  console.log(slug, files.length, "files");
+  const img = sharp(src).rotate();
+  const { width } = await img.metadata();
+  const pipeline = width > MAX_WIDTH ? img.resize({ width: MAX_WIDTH }) : img;
+  const info = await writeWebp(pipeline, out("projects", slug, "cover.webp"), 90);
+  manifest[slug] = { src: `/projects/${slug}/cover.webp`, ...info };
+  console.log(slug, `${info.width}x${info.height}`);
 }
 
 await fs.mkdir(path.join(root, "data"), { recursive: true });

@@ -1,4 +1,5 @@
 import manifest from "@/data/image-manifest.json";
+import type { Project } from "@/data/projects";
 
 export type ImageMeta = { src: string; width: number; height: number; blur: string };
 
@@ -10,7 +11,11 @@ export function getPortrait(): ImageMeta | undefined {
   return p && !Array.isArray(p) ? p : undefined;
 }
 
-export function getProjectImages(slug: string): ImageMeta[] {
+/** The one screenshot used for a project's mockup. */
+export function getProjectImage(slug: string): ImageMeta | undefined {
   const p = data[slug];
-  return Array.isArray(p) ? p : [];
+  return p && !Array.isArray(p) ? p : undefined;
 }
+
+/** A project plus its mockup image (undefined if the screenshot is missing). */
+export type ProjectItem = { project: Project; image?: ImageMeta };

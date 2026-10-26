@@ -51,6 +51,12 @@ export function SmoothScroll({ children }: { children: React.ReactNode }) {
       scrollToHash(window.location.hash || "#home", { push: false });
     }
 
+    // The Projects section used to be called Evidence. Keep old links working.
+    if (window.location.hash === "#evidence") {
+      window.history.replaceState(null, "", "#projects");
+      window.requestAnimationFrame(() => scrollToHash("#projects", { push: false }));
+    }
+
     void start();
     mq.addEventListener("change", onMotionChange);
     window.addEventListener("popstate", onPopState);

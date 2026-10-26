@@ -1,9 +1,9 @@
-import { evidenceCopy, type Project } from "@/data/projects";
+import { projectsCopy, type Project } from "@/data/projects";
 
 /** Live or repo URL button. Not rendered for private projects. */
 export function LinkButton({ project }: { project: Project }) {
   if (project.link.type === "private") return null;
-  const label = project.link.type === "live" ? evidenceCopy.liveLabel : evidenceCopy.repoLabel;
+  const label = project.link.type === "live" ? projectsCopy.liveLabel : projectsCopy.repoLabel;
   return (
     <a
       href={project.link.url}

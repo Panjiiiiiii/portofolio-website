@@ -7,7 +7,7 @@ export const navItems: NavItem[] = [
   { id: "home", label: "Home" },
   { id: "about", label: "About" },
   { id: "stack", label: "Stack" },
-  { id: "evidence", label: "Evidence" },
+  { id: "projects", label: "Projects" },
   { id: "experience", label: "Experience" },
   { id: "contact", label: "Contact" },
 ];
@@ -17,7 +17,7 @@ export const totalSections = "07";
 export const hero = {
   name: "NJOEL",
   tagline: "Full-stack & mobile developer based in Malang, Indonesia.",
-  ctaEvidence: "View evidence",
+  ctaProjects: "View projects",
   ctaContact: "Contact me",
   scrollCue: "Scroll",
 };

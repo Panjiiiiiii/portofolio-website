@@ -1,10 +1,13 @@
-// Project data for section 04. Edit here to add or change a project. No UI code needs to change.
+// Project data for section 04 (Projects). Edit here to add or change a project. No UI code needs to change.
 // Text is supplied by the owner. Do not invent features, metrics or client names.
 //
 // To add a project:
-//  1. Put screenshots in assets/project-galery/<folder>/1.png, 2.png ... and add the folder
-//     to `projectFolders` in scripts/optimize-assets.mjs (folder -> slug), then run `npm run assets`.
+//  1. Put the screenshot in assets/project-galery/<folder>/ and add one line for it to
+//     `projectImages` in scripts/optimize-assets.mjs (slug -> folder + file), then run `npm run assets`.
 //  2. Add an entry below, newest first.
+//  frame: "laptop" draws a CSS laptop around the screenshot (clean web UI shots).
+//         "plane" shows the screenshot as a tilted plane with no extra frame. Use it when the image
+//         already contains a phone bezel or browser chrome, so nothing is framed twice.
 //  link: { type: "live", url } shows a button, { type: "repo", url } shows a button,
 //        { type: "private" } shows a "Private project" label with no button.
 
@@ -15,6 +18,7 @@ export type ProjectLink =
 
 export type Project = {
   slug: string;
+  frame: "laptop" | "plane";
   title: string;
   role: string;
   year: string;
@@ -26,6 +30,7 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "w-spread",
+    frame: "plane", // the screenshot already includes a phone bezel
     title: "W-Spread App",
     role: "Full-stack Developer",
     year: "2026",
@@ -36,6 +41,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sugar-measurer",
+    frame: "laptop",
     title: "Sugar Measurer Website",
     role: "Tech Lead & Backend Engineer",
     year: "2026",
@@ -46,6 +52,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sidigs-app",
+    frame: "plane", // the screenshot already includes browser chrome and a taskbar
     title: "Sidigs App",
     role: "Part-time Full-stack Developer",
     year: "2025 - 2026",
@@ -56,6 +63,7 @@ export const projects: Project[] = [
   },
   {
     slug: "sme-website",
+    frame: "laptop",
     title: "SME's Website",
     role: "Full-stack Developer",
     year: "2024",
@@ -66,6 +74,7 @@ export const projects: Project[] = [
   },
   {
     slug: "ukk-exam-website",
+    frame: "laptop",
     title: "UKK Exam Website",
     role: "Full-stack Developer",
     year: "2024",
@@ -76,14 +85,11 @@ export const projects: Project[] = [
   },
 ];
 
-export const evidenceCopy = {
-  title: "Evidence",
+export const projectsCopy = {
+  title: "Projects",
   privateLabel: "Private project",
   liveLabel: "Live site",
   repoLabel: "Repository",
-  openLabel: "View screenshots",
-  closeLabel: "Close",
-  prevLabel: "Previous screenshot",
-  nextLabel: "Next screenshot",
-  emptyGallery: "No screenshots available for this project.",
+  indexLabel: "Project index",
+  progressLabel: "Project progress",
 };
