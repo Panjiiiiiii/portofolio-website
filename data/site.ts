@@ -42,27 +42,39 @@ export const about = {
   ],
 };
 
+// Logo ids resolve to simple-icons in lib/brand-icons.ts.
+export type StackItem = { id: string; name: string; description: string };
+
 export const stack = {
   title: "Stack",
   additionalLabel: "Additional tools",
-  // Names shown in the marquee, taken from the supplied stack list.
-  marquee: ["Next.js", "Laravel", "SQL", "MySQL", "PostgreSQL", "React Native", "Expo"],
+  // Logos only in the marquee. Each one gets an accessible name from lib/brand-icons.ts.
+  marquee: ["nextjs", "laravel", "express", "postgresql", "reactnative", "expo"],
   groups: [
     {
       id: "web",
       label: "Web Full-stack",
       items: [
         {
+          id: "nextjs",
           name: "Next.js",
           description:
             "Frontend and full-stack web apps with the App Router and TypeScript.",
         },
         {
+          id: "laravel",
           name: "Laravel",
           description: "Backend APIs, authentication and admin systems.",
         },
         {
-          name: "SQL (MySQL, PostgreSQL)",
+          id: "express",
+          name: "Express.js",
+          // Owner supplied this line inside square brackets as a suggested default.
+          description: "Backend REST APIs and services on Node.js.",
+        },
+        {
+          id: "postgresql",
+          name: "PostgreSQL",
           description: "Database design, queries and migrations.",
         },
       ],
@@ -72,11 +84,15 @@ export const stack = {
       label: "Mobile",
       items: [
         {
+          id: "reactnative",
           name: "React Native (Expo)",
           description: "Cross-platform mobile apps for Android and iOS.",
         },
       ],
     },
+  ] as { id: string; label: string; items: StackItem[] }[],
+  tools: [
+    { id: "github", name: "GitHub" },
+    { id: "figma", name: "Figma" },
   ],
-  tools: ["GitHub", "Figma"],
 };

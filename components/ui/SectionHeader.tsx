@@ -10,7 +10,7 @@ type Props = {
   id?: string;
 };
 
-/** Violet mono index on a 0px hairline that draws in once, then the display heading. */
+/** Accent mono index on a 0px hairline that draws in once, then the display heading. */
 export function SectionHeader({ index, title, id }: Props) {
   const rule = useRef<HTMLSpanElement>(null);
 

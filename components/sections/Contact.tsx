@@ -38,7 +38,7 @@ export function Contact() {
                   aria-label={s.ariaLabel}
                   className={`inline-flex min-h-14 items-center gap-3 rounded-pill px-8 text-[16px] font-medium transition-colors duration-200 ${
                     i === 0
-                      ? "bg-accent text-bg hover:bg-[#9d75f8]"
+                      ? "bg-accent text-bg hover:bg-accent-hover"
                       : "border border-line text-fg hover:border-accent"
                   }`}
                 >

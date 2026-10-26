@@ -21,7 +21,7 @@ export default function OpengraphImage() {
           padding: 72,
         }}
       >
-        <div style={{ display: "flex", fontSize: 44, color: "#8B5CF6", fontWeight: 800 }}>
+        <div style={{ display: "flex", fontSize: 44, color: "#00A19B", fontWeight: 800 }}>
           {"</>"}
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>

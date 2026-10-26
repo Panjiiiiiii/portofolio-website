@@ -4,8 +4,8 @@ const base =
   "inline-flex min-h-12 items-center justify-center rounded-pill px-7 font-sans text-[15px] font-medium transition-colors duration-200 ease-out";
 
 const variants = {
-  // Text on the violet fill is the background color: 4.7:1. White would be 4.2:1.
-  primary: "bg-accent text-bg hover:bg-[#9d75f8]",
+  // Text on the teal fill is the background color: 6.2:1. White would be 3.2:1.
+  primary: "bg-accent text-bg hover:bg-accent-hover",
   secondary: "border border-line text-fg hover:border-accent",
 } as const;
 

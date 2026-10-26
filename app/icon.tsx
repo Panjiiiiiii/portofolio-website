@@ -19,7 +19,7 @@ export default function Icon() {
           fontSize: 19,
           fontWeight: 800,
           letterSpacing: -1,
-          borderBottom: "3px solid #8B5CF6",
+          borderBottom: "3px solid #00A19B",
         }}
       >
         NJ

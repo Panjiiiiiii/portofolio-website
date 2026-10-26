@@ -5,7 +5,7 @@ import { Edges } from "@react-three/drei";
 import { useEffect, useMemo, useRef } from "react";
 import * as THREE from "three";
 
-const VIOLET = "#8B5CF6";
+const ACCENT = "#00A19B";
 
 // Chevron outline, built from primitives (no font files). Tip at x = OX.
 const S = 0.34; // stroke width
@@ -47,7 +47,7 @@ function Part({
 }) {
   return (
     <mesh geometry={geometry} position={position} rotation={[0, 0, rotationZ]}>
-      <meshStandardMaterial color={VIOLET} roughness={0.6} metalness={0} toneMapped={false} />
+      <meshStandardMaterial color={ACCENT} roughness={0.6} metalness={0} toneMapped={false} />
       <Edges threshold={15} color="#ECEAF2" lineWidth={1} transparent opacity={0.35} />
     </mesh>
   );

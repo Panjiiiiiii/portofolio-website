@@ -21,7 +21,7 @@ export default function NotFound() {
         <p className="mt-8 max-w-md text-xl">This page does not exist.</p>
         <Link
           href="/"
-          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-pill bg-accent px-7 text-[15px] font-medium text-bg transition-colors duration-200 hover:bg-[#9d75f8]"
+          className="mt-8 inline-flex min-h-12 items-center justify-center rounded-pill bg-accent px-7 text-[15px] font-medium text-bg transition-colors duration-200 hover:bg-accent-hover"
         >
           Back to home
         </Link>

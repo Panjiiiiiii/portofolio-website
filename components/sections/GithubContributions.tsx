@@ -4,7 +4,7 @@ import { githubCopy, socials } from "@/data/contact";
 import { getContributions, type Contributions } from "@/lib/github";
 
 // Solid steps of the accent mixed into the surface. Level 0 is the surface color, 4 is the accent.
-const LEVEL_COLORS = ["#131316", "#2e2650", "#4c3a8a", "#6b49c0", "#8b5cf6"];
+const LEVEL_COLORS = ["#131316", "#0e3637", "#0a5a58", "#057e7a", "#00a19b"];
 
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 

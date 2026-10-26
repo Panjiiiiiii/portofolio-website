@@ -96,7 +96,7 @@ export function Experience() {
                 />
                 <div
                   className={`grid gap-12 ${
-                    group.length > 1 ? "md:grid-cols-2 md:gap-16" : "md:max-w-[34rem]"
+                    group.length > 2 ? "md:grid-cols-2 md:gap-x-12 lg:grid-cols-3" : group.length > 1 ? "md:grid-cols-2 md:gap-16" : "md:max-w-[34rem]"
                   }`}
                 >
                   {group.map((e) => (

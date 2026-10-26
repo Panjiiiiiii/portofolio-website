@@ -6,7 +6,7 @@ Design Read: personal developer portfolio for hiring managers and freelance clie
 
 ## Direction in one sentence
 
-A dark, scroll-driven film of one developer's work: oversized NJOEL type, one violet glyph in 3D, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Evidence carries the page.
+A dark, scroll-driven film of one developer's work: oversized NJOEL type, three floating 3D objects, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Evidence carries the page.
 
 ## Why these dials
 
@@ -23,13 +23,13 @@ A dark, scroll-driven film of one developer's work: oversized NJOEL type, one vi
 | Text | `#ECEAF2` | Soft off-white, avoids pure-white glare on near-black. |
 | Muted | `#8B8A96` | Labels, secondary copy. 5.8:1 on background. |
 | Line | `#25242C` | Hairlines, borders, section rules. |
-| Accent | `#8B5CF6` | The single accent. Solid only. 4.7:1 on background, so it is for large type, section numbers, hover and active states, the 3D glyph and heatmap steps. Never small body text. |
+| Accent | `#00A19B` | The single accent: teal, a colour nod to the owner's favourite F1 team (no logo, star, sponsor, driver or livery is used). Solid only. 6.2:1 on background, 5.8:1 on surface. For CTAs, section numbers, hover and active states, 3D objects and heatmap steps. Never small body text. |
 
 Rules that follow from the tokens:
-- Text on a violet fill is `#09090B`, not white (white on violet is about 4.2:1, dark is 4.6:1).
+- Text on a teal fill is `#09090B`, not white (white on teal is 3.2:1, dark is 6.2:1). Hover fill is `#14B8B1`.
 - No gradients anywhere. No glow. No glassmorphism. Elevation is expressed by surface color and a 1px line, not shadow.
 - Palette is 3 neutrals plus 1 accent, which sits inside antislop R-29.
-- Violet on near-black is on antislop's R-01 watch list ("purple-and-black"). It is the owner's brand token, so it stays, with the dose cap above.
+- Accent decision (revision): the accent moved from violet `#8B5CF6` to teal `#00A19B`. Teal on near-black is a plain brand colour, no longer on the R-01 "purple-and-black" watch list, and it has better contrast.
 
 ## Type pairing
 
@@ -50,7 +50,7 @@ Mixed radius, as specified: pill (9999px) for buttons and tags, 4px for cards an
 ## Identity motif
 
 Two repeated gestures:
-1. Section index in violet mono, `01 / 07`, sitting on a 0px hairline that spans the content width.
+1. Section index in teal mono, `01 / 07`, sitting on a 0px hairline that spans the content width.
 2. The `/` separator: top nav links, breadcrumb-like labels, and the `</>` glyph in the hero. Slash is the typographic voice.
 
 ## Motion principles
@@ -108,7 +108,7 @@ English only, kept in `/data` so a second language can be added. Plain, specific
 ## Decision log (R-31, one line each)
 
 - Dark only: cinematic mood, developer audience, OLED-friendly.
-- Violet accent: owner's identity color, used for numbers, CTAs, active states, 3D glyph, heatmap.
+- Teal accent: owner's identity color, used for numbers, CTAs, active states, 3D glyph, heatmap.
 - Bricolage Grotesque for display: character at large sizes.
 - Mono for labels: signals data and index, kept small.
 - Marquee in Stack: shows the stack at a glance without percentage bars.

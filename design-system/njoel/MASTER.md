@@ -16,7 +16,7 @@ Kept from the skill: Dark Mode (OLED) as the style family, spacious density, the
 | Skill suggestion | Decision | Reason |
 |---|---|---|
 | FAQ/Documentation page pattern | Rejected | Portfolio has no FAQ. antislop R-28 forbids generic FAQ. |
-| Green `#22C55E` accent, slate palette | Rejected | Owner tokens below. One violet accent. |
+| Green `#22C55E` accent, slate palette | Rejected | Owner tokens below. One teal accent. |
 | JetBrains Mono / IBM Plex Sans | Replaced | Owner fonts: Bricolage Grotesque, Geist, JetBrains Mono (mono only). |
 | text-shadow glow | Rejected | No glow anywhere (owner rule, antislop R-13). |
 | `back.out(1.4)` stagger, scale 0.92 | Replaced | Overshoot reads as template. Use `power3.out` and `expo.out`. |
@@ -33,14 +33,14 @@ Kept from the skill: Dark Mode (OLED) as the style family, spacious density, the
 | Text | `#ECEAF2` | `--color-fg` | `fg` | Primary text |
 | Muted | `#8B8A96` | `--color-muted` | `muted` | Labels, secondary copy (5.8:1 on bg) |
 | Line | `#25242C` | `--color-line` | `line` | Borders, rules, dividers |
-| Accent | `#8B5CF6` | `--color-accent` | `accent` | CTAs, section numbers, hover, active, 3D glyph, heatmap level 4 |
+| Accent | `#00A19B` | `--color-accent` | `accent` | CTAs, section numbers, hover, active, 3D objects, heatmap level 4. Hover fill `--color-accent-hover` `#14B8B1`. Revision note: accent changed from violet `#8B5CF6` to teal `#00A19B` (owner is an F1 fan, colour nod only, no team marks). |
 
 Accent facts:
 - Contrast on `#09090B` is about 4.7:1. Allowed for large type (18px+ or 14px bold+), numbers, borders, fills and focus rings. Never for small body text.
-- Text placed on a violet fill is `#09090B` (about 4.7:1). White on violet is about 4.2:1 and fails.
-- Heatmap levels (solid steps, no gradient): L0 `#131316`, L1 `#2E2650`, L2 `#4C3A8A`, L3 `#6B49C0`, L4 `#8B5CF6`. These are mixes of surface and accent. They are chart data, not text. Measured against the surface: L1 1.33:1, L2 2.0:1, so low steps are faint by design. Meaning is never carried by color alone: each cell has a text label (date and count) available on focus and hover, and the totals are printed as text. Accent on surface is 4.38:1, so accent text on surface is large type only.
+- Text placed on a teal fill is `#09090B` (6.2:1). White on teal is 3.2:1 and fails.
+- Heatmap levels (solid steps, no gradient): L0 `#131316`, L1 `#0E3637`, L2 `#0A5A58`, L3 `#057E7A`, L4 `#00A19B`. These are mixes of surface and accent. They are chart data, not text. Measured against the surface: L1 1.41:1, L2 2.31:1, so low steps are faint by design. Meaning is never carried by color alone: each cell has a text label (date and count) available on focus and hover, and the totals are printed as text. Accent on surface is 5.8:1 and on the background 6.2:1; it still is not used for small body text.
 - Dark only. No light mode, no toggle.
-- Focus ring: 2px solid `#8B5CF6` with 3px offset. Meets 3:1 on bg.
+- Focus ring: 2px solid `#00A19B` with 3px offset. Meets 3:1 on bg.
 
 ## Typography
 

@@ -41,7 +41,7 @@ function StaticGlyph({ hidden }: { hidden: boolean }) {
       className={`absolute inset-0 m-auto h-auto w-full transition-opacity duration-400 ${
         hidden ? "opacity-0" : "opacity-100"
       }`}
-      fill="#8B5CF6"
+      fill="#00A19B"
       stroke="#ECEAF2"
       strokeOpacity={0.35}
       strokeWidth={1}
