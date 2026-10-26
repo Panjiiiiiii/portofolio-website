@@ -16,6 +16,8 @@ const eslintConfig = defineConfig([
     ".claude/**",
     ".agents/**",
     ".taste-skill/**",
+    ".tmp/**",
+    ".next-check/**",
   ]),
 ]);
 

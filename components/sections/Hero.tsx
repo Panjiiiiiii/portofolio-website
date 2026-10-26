@@ -6,7 +6,7 @@ import { ButtonLink } from "@/components/ui/Button";
 import { ScrollLink } from "@/components/ui/ScrollLink";
 import { hero, totalSections } from "@/data/site";
 import { loadGsap, prefersReducedMotion } from "@/lib/gsap";
-import { HeroGlyph } from "./HeroGlyph";
+import { HeroObjects } from "./HeroObjects";
 
 export function Hero() {
   const { ready } = usePageReady();
@@ -82,13 +82,10 @@ export function Hero() {
       aria-label="Home"
       className="relative flex min-h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] flex-col overflow-hidden px-6 pt-24 pb-4 md:min-h-dvh md:px-12 md:pb-8"
     >
+      {/* Three floating objects (glyph, gamepad, helmet) over the top band of the hero */}
+      <HeroObjects />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-end">
-        {/* One 3D element: the </> glyph, behind the type */}
-        <div className="pointer-events-none absolute top-0 right-[-6vw] z-20 aspect-[1.25] w-[min(96vw,640px)] md:top-[-2vh] md:right-[2vw] md:aspect-[1.6] md:w-[min(58vw,640px)] lg:w-[min(42vw,640px)]">
-          <HeroGlyph />
-        </div>
-
-        <div className="relative z-10 max-w-md">
+        <div data-hero-copy className="relative z-10 max-w-md">
           <p className="font-mono text-[13px] text-accent tabular-nums">
             01 / {totalSections}
           </p>
@@ -104,6 +101,7 @@ export function Hero() {
         <h1
           aria-label={hero.name}
           data-focus-target
+          data-hero-title
           tabIndex={-1}
           className="hero-title relative z-0 mt-6 flex justify-between pr-[0.028em] font-display leading-[0.82] font-extrabold tracking-[-0.045em] select-none md:mt-4"
         >

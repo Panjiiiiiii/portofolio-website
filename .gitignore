@@ -48,3 +48,4 @@ next-env.d.ts
 
 # scratch files
 /.tmp
+/.next-check
