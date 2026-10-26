@@ -110,7 +110,7 @@ export function SiteNav() {
         aria-label="Sections"
         className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
       >
-        <ul className="grid grid-cols-6">
+        <ul className="grid grid-cols-6 px-1">
           {navItems.map((item) => {
             const isActive = active === item.id;
             return (
