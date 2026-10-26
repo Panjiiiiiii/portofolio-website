@@ -1,0 +1,267 @@
+@import "tailwindcss";
+
+/* Tokens from DESIGN.md / MASTER.md. Dark only. */
+@theme {
+  --color-bg: #09090b;
+  --color-surface: #131316;
+  --color-fg: #eceaf2;
+  --color-muted: #8b8a96;
+  --color-line: #25242c;
+  --color-accent: #8b5cf6;
+
+  --radius-pill: 9999px;
+  --radius-card: 4px;
+  --radius-sharp: 0px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-power3: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-in-out-power2: cubic-bezier(0.455, 0.03, 0.515, 0.955);
+}
+
+@theme inline {
+  --font-display: var(--nf-display), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--nf-body), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--nf-mono), ui-monospace, monospace;
+}
+
+html {
+  color-scheme: dark;
+  background: var(--color-bg);
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-fg);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+a,
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+/* Lenis */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+/* Preloader: hidden when already seen this session (set by inline head script) */
+html[data-preloaded] #preloader {
+  display: none;
+}
+
+/* Initial states for GSAP reveals. Only when JS is on and motion is allowed. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hero-letter {
+    opacity: 0;
+  }
+  html.js [data-rule] {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes cue {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(200%);
+  }
+}
+
+/* Marquee (Stack section signature motion) */
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Fills the content width: five letters measure about 2.45em at tracking -0.045em. */
+.hero-title {
+  font-size: min(calc((100vw - 48px) / 2.55), 527px);
+}
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: min(calc((100vw - 96px) / 2.55), 527px);
+  }
+}
+
+.marquee-track {
+  animation: marquee 48s linear infinite;
+  will-change: transform;
+}
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    flex-wrap: wrap;
+    width: auto;
+  }
+  .marquee-dup {
+    display: none;
+  }
+}
+
+/* Portrait: grayscale by default, color on hover (desktop) or in view (touch) */
+.portrait img {
+  filter: grayscale(1);
+  transition: filter 400ms var(--ease-out-power3);
+}
+@media (hover: hover) {
+  .portrait:hover img {
+    filter: none;
+  }
+}
+.portrait[data-colored="true"] img {
+  filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .portrait img {
+    transition: none;
+  }
+}
+
+/* Stack cards: details reveal on hover/focus, always shown on touch */
+.stack-card .stack-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms var(--ease-out-power3);
+}
+.stack-card:hover .stack-detail,
+.stack-card:focus-within .stack-detail,
+.stack-card:focus-visible .stack-detail {
+  grid-template-rows: 1fr;
+}
+@media (hover: none) {
+  .stack-card .stack-detail {
+    grid-template-rows: 1fr;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stack-card .stack-detail {
+    transition: none;
+  }
+}
+
+.sr-only-focusable:not(:focus) {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+}
+
+/* Evidence rows: fill sweeps in from the side the pointer entered */
+.row-fill {
+  transform: scaleY(0);
+  transform-origin: var(--fill-origin, top);
+  transition: transform 400ms var(--ease-out-power3);
+}
+.project-row {
+  transition: border-color 200ms ease-out;
+}
+.row-index {
+  transition: color 200ms ease-out;
+}
+@media (hover: hover) {
+  .project-row:hover .row-fill,
+  .project-row:focus-within .row-fill {
+    transform: scaleY(1);
+  }
+  .project-row:hover,
+  .project-row:hover + .project-row {
+    border-top-color: var(--color-accent);
+  }
+  .project-row:hover .row-index,
+  .project-row:focus-within .row-index {
+    color: var(--color-fg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .row-fill {
+    transition: none;
+  }
+}
+
+/* Project dialog */
+html {
+  scrollbar-gutter: stable;
+}
+html.modal-open {
+  overflow: hidden;
+}
+dialog.project-dialog::backdrop {
+  background: var(--color-bg);
+}
+dialog.project-dialog[open] .modal-panel {
+  animation: modal-in 400ms var(--ease-out-power3) both;
+}
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.project-dialog[open] .modal-panel {
+    animation: none;
+  }
+}
+
+/* Experience timeline. Default = final state (no JS, reduced motion). */
+.tl-node {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transition:
+    background-color 400ms var(--ease-out-power3),
+    border-color 400ms var(--ease-out-power3);
+}
+.tl-period {
+  color: var(--color-fg);
+  transition: color 400ms var(--ease-out-power3);
+}
+@media (prefers-reduced-motion: no-preference) {
+  html.js .tl-step:not([data-active="true"]) .tl-node {
+    background: var(--color-bg);
+    border-color: var(--color-line);
+  }
+  html.js .tl-step:not([data-active="true"]) .tl-period {
+    color: var(--color-muted);
+  }
+  html.js [data-progress] {
+    transform: scaleY(0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tl-node,
+  .tl-period {
+    transition: none;
+  }
+}
