@@ -2,7 +2,7 @@
 
 export const githubUsername = "Panjiiiiiii";
 
-export const email = "panjiardian.freelance@gmail.com";
+export const email = "pann@njoel.my.id";
 
 export type Social = {
   id: "linkedin" | "instagram" | "github";
