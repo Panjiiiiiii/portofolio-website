@@ -166,7 +166,7 @@ export function HeroObjects() {
 
       {use3D && armed && anchors && (
         <div
-          className={`absolute inset-0 transition-opacity duration-400 ${
+          className={`pointer-events-none absolute inset-0 transition-opacity duration-400 ${
             canvasReady ? "opacity-100" : "opacity-0"
           }`}
         >

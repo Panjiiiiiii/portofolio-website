@@ -2,13 +2,15 @@
 // Text is supplied by the owner. Do not invent features, metrics or client names.
 //
 // To add a project:
-//  1. Put the screenshot in assets/project-galery/<folder>/ and add one line for it to
-//     `projectImages` in scripts/optimize-assets.mjs (slug -> folder + file), then run `npm run assets`.
+//  1. Put the screenshot at public/projects/<slug>/cover.webp (that file is the source of truth and is
+//     never overwritten), then run `npm run assets`. It writes the cropped frame.webp next to it.
 //  2. Add an entry below, newest first.
 //  frame: "laptop" (websites) or "phone" (mobile apps). Every frame of a kind is identical.
 //         The pipeline crops the screenshot to the frame: laptop 1440x1024, phone 824x1830.
 //  focusY: where the crop window sits in the screenshot, 0 = top, 100 = bottom.
 //          Change it and run `npm run assets` to show a different part of a tall screenshot.
+//  trim:   optional { top, bottom } in pixels of cover.webp, cut before scaling. Use it to remove
+//          browser tabs, address bar, taskbar or clock.
 //  link: { type: "live", url } shows a button, { type: "repo", url } shows a button,
 //        { type: "private" } shows a "Private project" label with no button.
 
@@ -21,6 +23,7 @@ export type Project = {
   slug: string;
   frame: "laptop" | "phone";
   focusY: number;
+  trim?: { top: number; bottom: number };
   title: string;
   role: string;
   year: string;
@@ -58,6 +61,7 @@ export const projects: Project[] = [
     slug: "sidigs-app",
     frame: "laptop",
     focusY: 0,
+    trim: { top: 90, bottom: 50 }, // Chrome tabs + address bar, Windows taskbar + clock
     title: "Sidigs App",
     role: "Part-time Full-stack Developer",
     year: "2025 - 2026",

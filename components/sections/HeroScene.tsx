@@ -316,7 +316,15 @@ export default function HeroScene({
       dpr={[1, 2]}
       camera={{ position: [0, 0, CAMERA_Z], fov: FOV }}
       gl={{ antialias: true, powerPreference: "low-power" }}
-      onCreated={onReady}
+      // R3F sets pointer-events: auto on its wrapper; this style is spread after it and wins,
+      // so the canvas never sits between the user and the hero copy or blocks wheel/touch scroll.
+      style={{ pointerEvents: "none" }}
+      // Nothing in the scene is interactive: detach R3F's DOM listeners and stop raycasting.
+      onCreated={(state) => {
+        state.events.disconnect?.();
+        state.set({ events: { ...state.events, enabled: false } });
+        onReady();
+      }}
     >
       {/* Lights only, no environment map (that would fetch an HDRI). */}
       <hemisphereLight args={["#ffffff", "#1a1a22", 1.0]} />

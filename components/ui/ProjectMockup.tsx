@@ -33,7 +33,7 @@ export function ProjectMockup({ project, image, eager = false }: Props) {
       blurDataURL={image.blur}
       loading={eager ? "eager" : "lazy"}
       draggable={false}
-      className="block h-full w-full object-cover select-none"
+      className="block h-full w-full object-cover object-top select-none"
     />
   ) : (
     <span className="flex h-full w-full items-center justify-center bg-surface p-4 text-center font-mono text-[13px] text-muted">

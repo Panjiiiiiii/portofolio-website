@@ -122,7 +122,8 @@ function clampCss(value: number, m: Mode) {
 /** CSS for the static SVG layer, generated from the same table. */
 export function heroLayoutCss(): string {
   const ids: ObjectId[] = ["glyph", "gamepad", "helmet"];
-  let css = ".hero-obj{position:absolute;transform:translate(-50%,-50%)}";
+  // Decorative only: never intercept pointer, touch or wheel events.
+  let css = ".hero-obj{position:absolute;transform:translate(-50%,-50%);pointer-events:none}";
   MODES.forEach((m) => {
     const rules = ids
       .map((id) => {

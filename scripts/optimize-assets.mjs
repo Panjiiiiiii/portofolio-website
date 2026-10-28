@@ -1,23 +1,21 @@
-// Reads raw files from /assets, writes optimized WebP into /public and
-// a manifest (dimensions + tiny blur placeholders) into /data/image-manifest.json.
-// Screenshots are resized, cropped to their device frame and re-encoded. Pixels are never edited,
-// and nothing in /assets is ever modified.
+// Builds the site's images and writes /data/image-manifest.json (sizes, blur placeholders, hashes).
+//
+// Sources:
+//  - Portrait: assets/photo-personal.jpeg -> public/images/njoel-portrait.webp
+//  - CV:       assets/cv/...              -> public/cv/ (copied byte for byte)
+//  - Projects: public/projects/<slug>/cover.webp is the SOURCE OF TRUTH, placed by the owner.
+//              It is only ever read. The cropped result goes to frame.webp in the same folder.
+//
+// Pixels are never edited: images are only trimmed, scaled, cropped to their device frame and
+// re-encoded. Nothing in /assets is modified, and cover.webp is never deleted or overwritten.
 import sharp from "sharp";
+import crypto from "node:crypto";
 import fs from "node:fs/promises";
 import path from "node:path";
 
 const root = process.cwd();
 const out = (...p) => path.join(root, "public", ...p);
-
-// One screenshot per project. slug -> { folder under assets/project-galery, file }.
-// To change the picture a project uses, change `file` and run `npm run assets`.
-const projectImages = {
-  "w-spread": { folder: "w-spread-app", file: "2.png" },
-  "sugar-measurer": { folder: "sugar-measurer-website", file: "1.png" },
-  "sidigs-app": { folder: "sidigs-app", file: "3.png" },
-  "sme-website": { folder: "smes-website", file: "1.png" },
-  "ukk-exam-website": { folder: "exam-website", file: "1.png" },
-};
+const sha1 = (buf) => crypto.createHash("sha1").update(buf).digest("hex");
 
 const manifest = {};
 
@@ -34,26 +32,51 @@ async function writeWebp(pipeline, dest, quality) {
   return { width: meta.width, height: meta.height, blur: await blur(buf) };
 }
 
-// Portrait: 4:5 crop around the face. Source is 3024x4032.
+/* ---------- Portrait ---------- */
+
+// 4:5 window defined in percent, so it works for any photo size.
+// w: window width as % of the source width. x, y: top-left of the window as % of the free space
+// (0 = left/top edge, 100 = right/bottom edge). The window is clamped to the image.
+const PORTRAIT_CROP = { x: 0, y: 0, w: 100 };
+
 const photoSrc = path.join(root, "assets", "photo-personal.jpeg");
 try {
   await fs.access(photoSrc);
-  // The card holder's badge starts near y=2500, so the crop stops at y=2380 with margin.
-  const crop = { left: 1032, top: 1300, width: 864, height: 1080 };
+  const meta = await sharp(photoSrc).rotate().metadata();
+  // .rotate() applies EXIF orientation, so swap the sides for 90/270 degree photos.
+  const turned = (meta.orientation ?? 1) >= 5;
+  const srcW = turned ? meta.height : meta.width;
+  const srcH = turned ? meta.width : meta.height;
+
+  let winW = Math.round((srcW * Math.min(100, Math.max(1, PORTRAIT_CROP.w))) / 100);
+  let winH = Math.round((winW * 5) / 4);
+  if (winH > srcH) {
+    winH = srcH;
+    winW = Math.round((winH * 4) / 5);
+  }
+  const left = Math.round(((srcW - winW) * Math.min(100, Math.max(0, PORTRAIT_CROP.x))) / 100);
+  const top = Math.round(((srcH - winH) * Math.min(100, Math.max(0, PORTRAIT_CROP.y))) / 100);
+
   const pipeline = sharp(photoSrc)
     .rotate()
-    .extract(crop)
+    .extract({ left, top, width: winW, height: winH })
     .resize(1000, 1250, { fit: "cover" });
   manifest["portrait"] = {
     src: "/images/njoel-portrait.webp",
     ...(await writeWebp(pipeline, out("images", "njoel-portrait.webp"), 82)),
   };
-  console.log("portrait ok");
-} catch {
-  console.warn("MISSING: assets/photo-personal.jpeg (a placeholder will render)");
+  const kept = ((winW * winH) / (srcW * srcH)) * 100;
+  console.log(
+    `portrait: source ${srcW}x${srcH}, window ${winW}x${winH} at (${left}, ${top}), ${kept.toFixed(1)}% of the image kept`,
+  );
+} catch (err) {
+  if (err?.code === "ENOENT") console.warn("MISSING: assets/photo-personal.jpeg (a placeholder will render)");
+  else throw err;
 }
 
-// CV: copied byte for byte (never edited or re-encoded). The hero shows the button only if it exists.
+/* ---------- CV ---------- */
+
+// Copied byte for byte (never edited or re-encoded). The hero shows the button only if it exists.
 const CV_FILE = "CV ATS Panji Putra Ardian.pdf";
 const cvCandidates = [
   path.join(root, "assets", "cv", `${CV_FILE}.pdf`),
@@ -75,10 +98,9 @@ if (cvSrc) {
   console.warn("MISSING: assets/cv/ CV file (the Download CV button will not render)");
 }
 
-// Start clean so only the chosen screenshots stay in /public/projects.
-await fs.rm(out("projects"), { recursive: true, force: true });
+/* ---------- Project frames ---------- */
 
-// Frame and focusY come from data/projects.ts (Node strips the TypeScript types on import).
+// Frame, focusY and trim come from data/projects.ts (Node strips the TypeScript types on import).
 const { projects } = await import("../data/projects.ts");
 
 // Output size per frame kind. The screen of every frame of a kind has exactly this ratio.
@@ -87,57 +109,74 @@ const FRAME_SIZE = {
   phone: { width: 824, height: 1830 }, // 2x of a 412 x 915 Android screen
 };
 
+// Every project must have its cover.webp. Check all of them before writing anything.
+const missing = [];
+for (const p of projects) {
+  try {
+    await fs.access(out("projects", p.slug, "cover.webp"));
+  } catch {
+    missing.push(p.slug);
+  }
+}
+if (missing.length) {
+  console.error(`ERROR: missing public/projects/<slug>/cover.webp for: ${missing.join(", ")}`);
+  process.exit(1);
+}
+
 const report = [];
 
-for (const [slug, { folder, file }] of Object.entries(projectImages)) {
-  const src = path.join(root, "assets", "project-galery", folder, file);
-  try {
-    await fs.access(src);
-  } catch {
-    console.warn(`MISSING: ${src}`);
-    continue;
-  }
-  const project = projects.find((p) => p.slug === slug);
-  const frame = project?.frame ?? "laptop";
-  const focusY = Math.min(100, Math.max(0, project?.focusY ?? 0));
+for (const project of projects) {
+  const { slug } = project;
+  const coverPath = out("projects", slug, "cover.webp");
+  const source = await fs.readFile(coverPath); // read only, never written
+  const meta = await sharp(source).metadata();
+
+  const frame = project.frame ?? "laptop";
+  const focusY = Math.min(100, Math.max(0, project.focusY ?? 0));
+  const trimTop = Math.max(0, project.trim?.top ?? 0);
+  const trimBottom = Math.max(0, project.trim?.bottom ?? 0);
   const { width: W, height: H } = FRAME_SIZE[frame];
 
-  const meta = await sharp(src).rotate().metadata();
-  const scaledH = Math.round((meta.height * W) / meta.width);
-  let pipeline;
+  const srcW = meta.width;
+  const srcH = meta.height - trimTop - trimBottom;
+  if (srcH <= 0) throw new Error(`${slug}: trim removes the whole image`);
+
+  // Trim browser/OS chrome first (pixels of the source), then scale and crop.
+  let pipeline = sharp(source);
+  if (trimTop || trimBottom) pipeline = pipeline.extract({ left: 0, top: trimTop, width: srcW, height: srcH });
+
+  const scaledH = Math.round((srcH * W) / srcW);
   let method;
   let keptPct;
   if (scaledH >= H) {
     // Scale to the frame width, then cut a frame-tall window at focusY (0 = top, 100 = bottom).
     const top = Math.round(((scaledH - H) * focusY) / 100);
-    pipeline = sharp(src).rotate().resize({ width: W }).extract({ left: 0, top, width: W, height: H });
-    method = `window at focusY ${focusY} (top ${top}px)`;
+    pipeline = pipeline.resize({ width: W }).extract({ left: 0, top, width: W, height: H });
+    method = `window, focusY ${focusY} (top ${top}px)`;
     keptPct = (H / scaledH) * 100;
   } else {
     // Too short for a window: fill the frame and crop the sides evenly.
-    pipeline = sharp(src).rotate().resize(W, H, { fit: "cover", position: "centre" });
-    method = "center crop (cover)";
-    const scaledW = (meta.width * H) / meta.height;
-    keptPct = (W / scaledW) * 100;
+    pipeline = pipeline.resize(W, H, { fit: "cover", position: "centre" });
+    method = "center crop (cover), image shorter than the frame";
+    keptPct = (W / ((srcW * H) / srcH)) * 100;
   }
 
-  const info = await writeWebp(pipeline, out("projects", slug, "cover.webp"), 82);
-  manifest[slug] = { src: `/projects/${slug}/cover.webp`, ...info };
+  const info = await writeWebp(pipeline, out("projects", slug, "frame.webp"), 82);
+  manifest[slug] = { src: `/projects/${slug}/frame.webp`, ...info, sourceHash: sha1(source) };
+  const removedOfSource = 100 - (keptPct * srcH) / meta.height; // includes the trimmed rows
   report.push({
     slug,
     frame,
     source: `${meta.width}x${meta.height}`,
+    trim: trimTop || trimBottom ? `top ${trimTop}, bottom ${trimBottom}` : "none",
     output: `${info.width}x${info.height}`,
-    cropped: `${(100 - keptPct).toFixed(1)}% removed`,
+    removed: `${removedOfSource.toFixed(1)}%`,
     method,
-    upscaled: meta.width < W ? "yes, low resolution, please retake" : "no",
+    resolution: srcW < W ? "LOW RESOLUTION (upscaled), please retake" : "ok",
   });
 }
 console.table(report);
 
 await fs.mkdir(path.join(root, "data"), { recursive: true });
-await fs.writeFile(
-  path.join(root, "data", "image-manifest.json"),
-  JSON.stringify(manifest, null, 2),
-);
+await fs.writeFile(path.join(root, "data", "image-manifest.json"), JSON.stringify(manifest, null, 2));
 console.log("manifest written");
