@@ -10,7 +10,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "assets": "node scripts/optimize-assets.mjs"
+    "assets": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON scripts/optimize-assets.mjs"
   },
   "dependencies": {
     "@phosphor-icons/react": "2.1.10",

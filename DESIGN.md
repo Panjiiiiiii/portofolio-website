@@ -83,7 +83,7 @@ One set only: Phosphor (regular weight). It has the brand marks needed for Linke
 ## Imagery
 
 - Portrait: the real photo, grayscale to color, 0px corners, 1px line border.
-- Project screenshots: one per project, shown unmodified inside a CSS mockup (laptop) or as a tilted plane when the image already has a phone bezel or browser chrome.
+- Project screenshots: one per project, cropped (never edited) to the frame by `npm run assets`. Every website sits in the same CSS laptop (screen 1440 / 1024); the mobile app sits in one CSS Android phone (screen 412 / 915, punch-hole camera, no notch). Both frames share one height so the stage never jumps. No brand marks.
 - No stock images, no generated faces, no illustrations, no decorative imagery.
 - Logo and favicon: a plain NJOEL wordmark set in Bricolage Grotesque.
 

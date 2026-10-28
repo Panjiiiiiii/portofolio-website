@@ -3,25 +3,25 @@
     "src": "/images/njoel-portrait.webp",
     "width": 1000,
     "height": 1250,
-    "blur": "data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAADQAwCdASoQABQAPu1iqU2ppaOiMAgBMB2JZQAAV8H0fQ4GpA1x7AAA/kQdBkyILlfandouZWkBxAZFsEQKVXFWUmknmuXkf7qZs0oReuJZ9R0b5xbdSGEyfYR05FK3X7We/qt5UUyFKcsFMxFg9sfCWuBv8y/SkG6yIAAA"
+    "blur": "data:image/webp;base64,UklGRpwAAABXRUJQVlA4IJAAAAAwBACdASoQABQAPu1iqU2ppaOiMAgBMB2JZgCdMoAC5AbI1vbXfUPGiIAA/XZhlH99gxI8kD9jOa2MpIUlbwMIE2Lv9pHVLSmD+6fml4NzGqDKer5lRqeBHWM3BW+La4l9JGydqeoPhNhsYkSG+23T9BGbnfYPXwxGVPZ3ZQI5hYp13DHjt30klnFHlhGxQAA="
   },
   "w-spread": {
     "src": "/projects/w-spread/cover.webp",
-    "width": 427,
-    "height": 905,
-    "blur": "data:image/webp;base64,UklGRrgAAABXRUJQVlA4IKwAAAAQBQCdASoQACIAPu1irE4ppaSiKqwBMB2JZwDO8azlACfwoz76rePWIHcmzJCOX5IAAP6yOCNonfQR2k8jOPXfWV4b4acFJlChorbPSm2aioS2wpA0w6ao1XK95VJoV7jD5lspZUcXHTf31CSzFVrFjMmGpLSXBIJm4sRte1XS06TzcdxGCFD6u0d3va8xse/m8J7++dM+JbI7OUY6/bJqdl8keCf2pgrKEgAA"
+    "width": 824,
+    "height": 1830,
+    "blur": "data:image/webp;base64,UklGRrAAAABXRUJQVlA4IKQAAADQBACdASoQACQAPt1cpU2opaOiNUgBEBuJYwDKtCzvIP/jjywj+9bU+wfx1CmFAAD+BU5ITsrmJfA34Y9cYOcxKq9WAdqVoOfDm5V1dNUjb5ALSHvw+LZlb+YRz2Fz84SguCny+t4Ner6Ujt/Ndfy0amO8SuXBvUwq2SfUAcHqpWaYQ61qMEc68AkREpnEbmhvN9nQeb8Ib7/X3+mnsEW3LAAAAA=="
   },
   "sugar-measurer": {
     "src": "/projects/sugar-measurer/cover.webp",
     "width": 1440,
-    "height": 1149,
-    "blur": "data:image/webp;base64,UklGRiYAAABXRUJQVlA4IBoAAAAwAQCdASoQAA0AA4BaJaQAA3AA/vTgfAAAAA=="
+    "height": 1024,
+    "blur": "data:image/webp;base64,UklGRiYAAABXRUJQVlA4IBoAAAAwAQCdASoQAAsAA4BaJaQAA3AA/vSmW/AAAA=="
   },
   "sidigs-app": {
     "src": "/projects/sidigs-app/cover.webp",
-    "width": 1912,
-    "height": 803,
-    "blur": "data:image/webp;base64,UklGRnYAAABXRUJQVlA4WAoAAAAQAAAADwAABgAAQUxQSBgAAAABF3D//4iIgSDbZmiTGNqdjxDR/wD8qgFWUDggOAAAAPABAJ0BKhAABwADgFolAF2AI9BPcH6EAAD+7bPu+JunDIHcORv1dzkTwwgewK3A4gxyNv9YAAAA"
+    "width": 1440,
+    "height": 1024,
+    "blur": "data:image/webp;base64,UklGRnQAAABXRUJQVlA4WAoAAAAQAAAADwAACgAAQUxQSBIAAAABD9D/iAiIBZP8pfeGENH/bAFWUDggPAAAAFACAJ0BKhAACwADgFoliAJ0R//dgAMB4jCeAAD+aMPWce/c7UKCXccAAeflfnGfEWbkAeNep3mumwAAAA=="
   },
   "sme-website": {
     "src": "/projects/sme-website/cover.webp",
@@ -31,8 +31,8 @@
   },
   "ukk-exam-website": {
     "src": "/projects/ukk-exam-website/cover.webp",
-    "width": 1920,
-    "height": 1365,
-    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADQAQCdASoQAAsAA4BaJZwAAtrXK7b1mAD+4Nura5OYo3q9CMdxCR10/mD5zE6YW05OhKnPxUMub7Dk/gBqmnZ0x5HGRU7X5+eVVKEwdGgEcAAA"
+    "width": 1440,
+    "height": 1024,
+    "blur": "data:image/webp;base64,UklGRl4AAABXRUJQVlA4IFIAAADwAQCdASoQAAsAA4BaJZwAAtrWUiOWDdAA/uDbq2uTmKN6vQjHd9mPeJjPh/w4EdcS1exWl3lcqxBRsKte7RK7aLycEGn5MsMO4sPiYFbLI4AA"
   }
 }

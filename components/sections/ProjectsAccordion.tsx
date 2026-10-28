@@ -48,7 +48,7 @@ export function ProjectsAccordion({ items }: { items: ProjectItem[] }) {
             >
               <div className="min-h-0 overflow-hidden">
                 <div className="pb-10">
-                  <div className="pj-flat">
+                  <div className="pj-compact pt-2 pb-6">
                     <ProjectMockup project={project} image={image} />
                   </div>
                   <div className="mt-8">

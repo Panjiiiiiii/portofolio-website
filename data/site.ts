@@ -18,6 +18,8 @@ export const hero = {
   name: "NJOEL",
   tagline: "Full-stack Developer & Project Manager",
   ctaProjects: "View projects",
+  ctaCv: "Download CV",
+  ctaCvAria: "Download CV (PDF)",
   ctaContact: "Contact me",
   scrollCue: "Scroll",
 };

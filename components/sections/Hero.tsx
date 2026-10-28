@@ -2,13 +2,15 @@
 
 import { useEffect, useRef } from "react";
 import { usePageReady } from "@/components/providers/PageReady";
-import { ButtonLink } from "@/components/ui/Button";
+import { DownloadSimple } from "@phosphor-icons/react/dist/ssr";
+import { AnchorButton, ButtonLink } from "@/components/ui/Button";
+import { CV_FILE } from "@/lib/cv-name";
 import { ScrollLink } from "@/components/ui/ScrollLink";
 import { hero, totalSections } from "@/data/site";
 import { loadGsap, prefersReducedMotion } from "@/lib/gsap";
 import { HeroObjects } from "./HeroObjects";
 
-export function Hero() {
+export function Hero({ cvHref }: { cvHref: string | null }) {
   const { ready } = usePageReady();
   const letters = useRef<HTMLSpanElement[]>([]);
   const reactive = useRef<HTMLSpanElement[]>([]);
@@ -85,13 +87,20 @@ export function Hero() {
       {/* Three floating objects (glyph, gamepad, helmet) over the top band of the hero */}
       <HeroObjects />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-end">
-        <div data-hero-copy className="relative z-10 max-w-md">
+        <div data-hero-copy className="relative z-10">
           <p className="font-mono text-[13px] text-accent tabular-nums">
             01 / {totalSections}
           </p>
-          <p className="mt-4 text-lg text-fg md:text-xl">{hero.tagline}</p>
-          <div className="mt-8 flex flex-wrap gap-3">
+          <p className="mt-4 max-w-md text-lg text-fg md:text-xl">{hero.tagline}</p>
+          <div className="mt-8 flex max-w-xl flex-wrap gap-3">
             <ButtonLink href="#projects">{hero.ctaProjects}</ButtonLink>
+            {/* Rendered only when public/cv holds the file at build time, so it is never a dead link */}
+            {cvHref && (
+              <AnchorButton href={cvHref} download={CV_FILE} aria-label={hero.ctaCvAria}>
+                <DownloadSimple size={18} aria-hidden />
+                {hero.ctaCv}
+              </AnchorButton>
+            )}
             <ButtonLink href="#contact" variant="secondary">
               {hero.ctaContact}
             </ButtonLink>

@@ -10,6 +10,7 @@ import { Stack } from "@/components/sections/Stack";
 import { Preloader } from "@/components/ui/Preloader";
 import { SiteNav } from "@/components/ui/SiteNav";
 import { socials } from "@/data/contact";
+import { getCvHref } from "@/lib/cv";
 import { siteUrl } from "@/lib/site";
 
 // Regenerate the static page every 6 hours so GitHub data stays fresh.
@@ -50,7 +51,7 @@ export default function Home() {
         </a>
         <SiteNav />
         <main id="main" tabIndex={-1}>
-          <Hero />
+          <Hero cvHref={getCvHref()} />
           <About />
           <Stack />
           <Projects />

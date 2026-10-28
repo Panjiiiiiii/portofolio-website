@@ -5,9 +5,10 @@
 //  1. Put the screenshot in assets/project-galery/<folder>/ and add one line for it to
 //     `projectImages` in scripts/optimize-assets.mjs (slug -> folder + file), then run `npm run assets`.
 //  2. Add an entry below, newest first.
-//  frame: "laptop" draws a CSS laptop around the screenshot (clean web UI shots).
-//         "plane" shows the screenshot as a tilted plane with no extra frame. Use it when the image
-//         already contains a phone bezel or browser chrome, so nothing is framed twice.
+//  frame: "laptop" (websites) or "phone" (mobile apps). Every frame of a kind is identical.
+//         The pipeline crops the screenshot to the frame: laptop 1440x1024, phone 824x1830.
+//  focusY: where the crop window sits in the screenshot, 0 = top, 100 = bottom.
+//          Change it and run `npm run assets` to show a different part of a tall screenshot.
 //  link: { type: "live", url } shows a button, { type: "repo", url } shows a button,
 //        { type: "private" } shows a "Private project" label with no button.
 
@@ -18,7 +19,8 @@ export type ProjectLink =
 
 export type Project = {
   slug: string;
-  frame: "laptop" | "plane";
+  frame: "laptop" | "phone";
+  focusY: number;
   title: string;
   role: string;
   year: string;
@@ -30,7 +32,8 @@ export type Project = {
 export const projects: Project[] = [
   {
     slug: "w-spread",
-    frame: "plane", // the screenshot already includes a phone bezel
+    frame: "phone",
+    focusY: 0,
     title: "W-Spread App",
     role: "Full-stack Developer",
     year: "2026",
@@ -42,6 +45,7 @@ export const projects: Project[] = [
   {
     slug: "sugar-measurer",
     frame: "laptop",
+    focusY: 0,
     title: "Sugar Measurer Website",
     role: "Tech Lead & Backend Engineer",
     year: "2026",
@@ -52,7 +56,8 @@ export const projects: Project[] = [
   },
   {
     slug: "sidigs-app",
-    frame: "plane", // the screenshot already includes browser chrome and a taskbar
+    frame: "laptop",
+    focusY: 0,
     title: "Sidigs App",
     role: "Part-time Full-stack Developer",
     year: "2025 - 2026",
@@ -64,17 +69,19 @@ export const projects: Project[] = [
   {
     slug: "sme-website",
     frame: "laptop",
+    focusY: 0,
     title: "Bakery Business System",
     role: "Full-stack Developer",
     year: "2024",
     stack: ["Next.js", "Express.js", "Node.js", "PostgreSQL"],
     description:
-      "Full-stackbakery ordering system. Features include a cart, receipt printing, payment gateway and filterable financial analytics.",
+      "Full-stack bakery ordering system. Features include a cart, receipt printing, payment gateway and filterable financial analytics.",
     link: { type: "private" },
   },
   {
     slug: "ukk-exam-website",
     frame: "laptop",
+    focusY: 0,
     title: "UKK Exam Website",
     role: "Full-stack Developer",
     year: "2024",

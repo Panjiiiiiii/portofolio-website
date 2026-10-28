@@ -6,48 +6,46 @@ type Props = ProjectItem & {
   eager?: boolean;
 };
 
+// Display widths of the screen, used for the responsive srcset.
+const SIZES = {
+  laptop: "(min-width: 1024px) 660px, (min-width: 768px) 55vw, 90vw",
+  phone: "(min-width: 768px) 240px, 45vw",
+} as const;
+
 /**
- * One screenshot in a CSS-built mockup. No second WebGL context.
- * - "laptop": lid with a thin bezel and a base, drawn around a clean web screenshot.
- * - "plane": the screenshot alone as a plane, for images that already contain a phone
- *   bezel or browser chrome (so nothing is framed twice).
- * The screenshot is never edited, only displayed.
+ * One screenshot in a CSS-only device frame. No images, no brand marks, no second WebGL context.
+ * - laptop: every website gets the same laptop; the screen is exactly 1440 / 1024.
+ * - phone: an Android-style phone (punch-hole camera, side buttons); the screen is 412 / 915.
+ * Both frames take their height from the same --pj-h (globals.css), so the stage does not jump.
+ * The screenshot is pre-cropped to the screen ratio by `npm run assets`; it is never edited.
  */
 export function ProjectMockup({ project, image, eager = false }: Props) {
-  if (!image) {
-    return (
-      <div
-        role="img"
-        aria-label={`${project.title} screenshot placeholder`}
-        className="flex aspect-[4/3] w-full items-center justify-center rounded-card border border-line bg-surface p-6 text-center font-mono text-[13px] text-muted"
-      >
-        [SCREENSHOT PLACEHOLDER] Run npm run assets after adding the file.
-      </div>
-    );
-  }
+  const kind = project.frame;
 
-  const ratio = image.width / image.height;
-  const picture = (
+  const picture = image ? (
     <Image
       src={image.src}
       alt={`Screenshot of the ${project.title} project`}
       width={image.width}
       height={image.height}
+      sizes={SIZES[kind]}
       placeholder="blur"
       blurDataURL={image.blur}
-      // Served as exported in /public so the pixels are exactly what was optimized.
-      unoptimized
       loading={eager ? "eager" : "lazy"}
       draggable={false}
-      className="block h-full w-full select-none"
+      className="block h-full w-full object-cover select-none"
     />
+  ) : (
+    <span className="flex h-full w-full items-center justify-center bg-surface p-4 text-center font-mono text-[13px] text-muted">
+      [SCREENSHOT PLACEHOLDER] Run npm run assets after adding the file.
+    </span>
   );
 
   return (
-    <div className="pj-device-wrap" style={{ ["--ar" as string]: ratio }}>
+    <div className="pj-device-wrap">
       <div className="pj-persp">
         <div className="pj-tilt" data-pj-tilt>
-          {project.frame === "laptop" ? (
+          {kind === "laptop" ? (
             <div className="pj-device pj-laptop">
               <div className="pj-lid">
                 <span className="pj-cam" aria-hidden />
@@ -56,8 +54,13 @@ export function ProjectMockup({ project, image, eager = false }: Props) {
               <div className="pj-base" aria-hidden />
             </div>
           ) : (
-            <div className="pj-device pj-plane">
-              <div className="pj-plane-img">{picture}</div>
+            <div className="pj-device pj-phone">
+              <span className="pj-btn pj-btn-power" aria-hidden />
+              <span className="pj-btn pj-btn-volume" aria-hidden />
+              <div className="pj-phone-screen">
+                {picture}
+                <span className="pj-punch" aria-hidden />
+              </div>
             </div>
           )}
         </div>
