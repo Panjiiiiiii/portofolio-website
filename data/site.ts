@@ -16,14 +16,14 @@ export const totalSections = "07";
 
 export const hero = {
   name: "NJOEL",
-  tagline: "Full-stack & mobile developer based in Malang, Indonesia.",
+  tagline: "Full-stack Developer & Project Manager",
   ctaProjects: "View projects",
   ctaContact: "Contact me",
   scrollCue: "Scroll",
 };
 
 export const preloader = {
-  label: "Initialising...",
+  label: "Initializing...",
   skip: "Skip",
 };
 

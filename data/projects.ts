@@ -64,12 +64,12 @@ export const projects: Project[] = [
   {
     slug: "sme-website",
     frame: "laptop",
-    title: "SME's Website",
+    title: "Bakery Business System",
     role: "Full-stack Developer",
     year: "2024",
     stack: ["Next.js", "Express.js", "Node.js", "PostgreSQL"],
     description:
-      "Full-stack cafe menu ordering system. Features include a cart, receipt printing, and filterable financial analytics.",
+      "Full-stackbakery ordering system. Features include a cart, receipt printing, payment gateway and filterable financial analytics.",
     link: { type: "private" },
   },
   {
