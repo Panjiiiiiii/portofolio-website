@@ -7,57 +7,23 @@ import * as THREE from "three";
 import { loadGsap } from "@/lib/gsap";
 import type { Anchor, ObjectId } from "@/lib/hero-layout";
 
-// One shared WebGL context for all three objects. Everything is built from primitives:
+// One WebGL context for the hero's one glyph. Built from primitives:
 // no model files, no remote assets, no environment map (lights only).
 const ACCENT = "#00A19B";
-const BODY = "#2b2b34"; // near-black, lifted a little so the shape reads on #09090B
-const DARK = "#0c0c0f";
 
 const FOV = 30;
 const CAMERA_Z = 10;
 const UNITS_H = 2 * CAMERA_Z * Math.tan(THREE.MathUtils.degToRad(FOV / 2)); // world height at z = 0
 
-/** Width of each object in world units, so a pixel size can be mapped to a scale. */
-const LOCAL_WIDTH: Record<ObjectId, number> = { glyph: 4.3, gamepad: 3.5, helmet: 2.1 };
+/** Width of the glyph in world units, so a pixel size can be mapped to a scale. */
+const LOCAL_WIDTH = 4.3;
 
-/** Scroll depth per object. dy: share of the hero height it lags (+) or leads (-). */
-const DEPTH: Record<ObjectId, { dy: number; rotY: number; rotZ: number; dscale: number; dz: number; mouse: number }> = {
-  glyph: { dy: 0.1, rotY: 1.1, rotZ: 0.12, dscale: 0.12, dz: -1.5, mouse: 0.35 },
-  gamepad: { dy: -0.08, rotY: -0.9, rotZ: -0.2, dscale: 0.18, dz: 1.2, mouse: 0.45 },
-  helmet: { dy: 0.28, rotY: 1.5, rotZ: 0.1, dscale: 0.1, dz: -3, mouse: 0.5 },
-};
+/** Scroll parallax as the hero scrolls out. dy: share of the hero height it lags behind. */
+const DEPTH = { dy: 0.1, rotY: 1.1, rotZ: 0.12, dscale: 0.12, dz: -1.5, mouse: 0.35 };
 
 type Pointer = { x: number; y: number };
 
 /* ---------- geometry helpers ---------- */
-
-function roundedRect(w: number, h: number, r: number) {
-  const x = -w / 2;
-  const y = -h / 2;
-  const s = new THREE.Shape();
-  s.moveTo(x + r, y);
-  s.lineTo(x + w - r, y);
-  s.absarc(x + w - r, y + r, r, -Math.PI / 2, 0, false);
-  s.lineTo(x + w, y + h - r);
-  s.absarc(x + w - r, y + h - r, r, 0, Math.PI / 2, false);
-  s.lineTo(x + r, y + h);
-  s.absarc(x + r, y + h - r, r, Math.PI / 2, Math.PI, false);
-  s.lineTo(x, y + r);
-  s.absarc(x + r, y + r, r, Math.PI, Math.PI * 1.5, false);
-  return s;
-}
-
-function extrudeRounded(w: number, h: number, r: number, depth: number) {
-  const geo = new THREE.ExtrudeGeometry(roundedRect(w, h, r), {
-    depth,
-    bevelEnabled: true,
-    bevelSize: 0.04,
-    bevelThickness: 0.04,
-    bevelSegments: 2,
-  });
-  geo.center();
-  return geo;
-}
 
 function chevronGeometry(dir: 1 | -1) {
   const S = 0.34;
@@ -89,7 +55,7 @@ function useDisposable<T extends THREE.BufferGeometry>(make: () => T): T {
   return geo;
 }
 
-/* ---------- the three objects ---------- */
+/* ---------- the glyph ---------- */
 
 function Glyph() {
   const left = useDisposable(() => chevronGeometry(1));
@@ -110,85 +76,6 @@ function Glyph() {
   );
 }
 
-function Gamepad() {
-  const body = useDisposable(() => extrudeRounded(3.0, 1.35, 0.55, 0.4));
-  const grip = useDisposable(() => extrudeRounded(0.95, 1.5, 0.42, 0.38));
-  const dpadH = useDisposable(() => new THREE.BoxGeometry(0.55, 0.18, 0.12));
-  const dpadV = useDisposable(() => new THREE.BoxGeometry(0.18, 0.55, 0.12));
-  const button = useDisposable(() => new THREE.CylinderGeometry(0.11, 0.11, 0.09, 20));
-  const stickBase = useDisposable(() => new THREE.CylinderGeometry(0.22, 0.22, 0.08, 24));
-  const stickCap = useDisposable(() => new THREE.CylinderGeometry(0.15, 0.17, 0.14, 24));
-  const z = 0.27; // just in front of the body face
-  const mat = (color: string, rough = 0.5) => (
-    <meshStandardMaterial color={color} roughness={rough} metalness={0.05} />
-  );
-  const faceButtons: [number, number, string][] = [
-    [0, 0.28, DARK],
-    [0, -0.28, DARK],
-    [-0.28, 0, DARK],
-    [0.28, 0, ACCENT], // the one accent button
-  ];
-  return (
-    <group rotation={[-0.22, 0, 0]}>
-      <mesh geometry={body}>
-        {mat(BODY)}
-        <Edges threshold={20} color="#ECEAF2" lineWidth={1} transparent opacity={0.25} />
-      </mesh>
-      <mesh geometry={grip} position={[-1.22, -0.72, -0.02]} rotation={[0, 0, 0.3]}>
-        {mat(BODY)}
-      </mesh>
-      <mesh geometry={grip} position={[1.22, -0.72, -0.02]} rotation={[0, 0, -0.3]}>
-        {mat(BODY)}
-      </mesh>
-
-      {/* d-pad: two crossed boxes */}
-      <mesh geometry={dpadH} position={[-0.88, 0.17, z]}>{mat(DARK)}</mesh>
-      <mesh geometry={dpadV} position={[-0.88, 0.17, z]}>{mat(DARK)}</mesh>
-
-      {/* four face buttons */}
-      {faceButtons.map(([x, y, color]) => (
-        <mesh key={`${x}${y}`} geometry={button} position={[0.88 + x, 0.17 + y, z]} rotation={[Math.PI / 2, 0, 0]}>
-          {mat(color, 0.4)}
-        </mesh>
-      ))}
-
-      {/* two thumbsticks */}
-      {[-0.5, 0.5].map((x) => (
-        <group key={x} position={[x, -0.28, z]} rotation={[Math.PI / 2, 0, 0]}>
-          <mesh geometry={stickBase}>{mat(DARK)}</mesh>
-          <mesh geometry={stickCap} position={[0, 0.1, 0]}>{mat("#2f2f38")}</mesh>
-        </group>
-      ))}
-    </group>
-  );
-}
-
-function Helmet() {
-  const shell = useDisposable(() => new THREE.SphereGeometry(1, 40, 28));
-  const visor = useDisposable(() => new THREE.SphereGeometry(1, 36, 22));
-  const chin = useDisposable(() => new THREE.SphereGeometry(1, 28, 16));
-  const stripe = useDisposable(() => new THREE.TorusGeometry(1, 0.06, 10, 56, Math.PI));
-  const shellColor = "#363640";
-  return (
-    <group rotation={[0.08, -0.45, 0]}>
-      <mesh geometry={shell} scale={[0.95, 1, 1.15]}>
-        <meshStandardMaterial color={shellColor} roughness={0.4} metalness={0.05} />
-      </mesh>
-      {/* visor: a dark glossy ellipsoid set into the front of the shell */}
-      <mesh geometry={visor} position={[0, 0.12, 0.82]} scale={[0.8, 0.34, 0.42]}>
-        <meshStandardMaterial color="#050507" roughness={0.12} metalness={0.3} />
-      </mesh>
-      {/* chin bar */}
-      <mesh geometry={chin} position={[0, -0.6, 0.93]} scale={[0.5, 0.2, 0.3]}>
-        <meshStandardMaterial color="#2a2a33" roughness={0.4} metalness={0.05} />
-      </mesh>
-      {/* the one accent stripe, over the top from front to back */}
-      <mesh geometry={stripe} rotation={[0, Math.PI / 2, 0]} scale={[1.17, 1.03, 1]}>
-        <meshStandardMaterial color={ACCENT} roughness={0.5} toneMapped={false} />
-      </mesh>
-    </group>
-  );
-}
 /* ---------- scene: layout, float, mouse and scroll parallax ---------- */
 
 function Scene({
@@ -202,10 +89,7 @@ function Scene({
 }) {
   const size = useThree((s) => s.size);
   const glyphRef = useRef<THREE.Group>(null);
-  const gamepadRef = useRef<THREE.Group>(null);
-  const helmetRef = useRef<THREE.Group>(null);
   const smooth = useRef(0);
-  const phase: Record<ObjectId, number> = { glyph: 0, gamepad: 2.1, helmet: 4.2 };
 
   useFrame((state, dt) => {
     // One scroll value, smoothed here so scrubbing never looks stepped.
@@ -214,53 +98,35 @@ function Scene({
     const t = state.clock.elapsedTime;
     const ppu = size.height / UNITS_H;
     const pt = pointer.current ?? { x: 0, y: 0 };
+    const g = glyphRef.current;
+    const a = anchors.glyph;
+    if (!g) return;
+    if (!a) {
+      g.visible = false;
+      return;
+    }
+    g.visible = true;
+    const base = a.size / (ppu * LOCAL_WIDTH);
+    const bob = Math.sin(t * 0.8) * 0.1;
+    const swing = Math.sin(t * 0.35) * 0.4;
 
-    const groups: Record<ObjectId, THREE.Group | null> = {
-      glyph: glyphRef.current,
-      gamepad: gamepadRef.current,
-      helmet: helmetRef.current,
-    };
-    (Object.keys(groups) as ObjectId[]).forEach((id) => {
-      const g = groups[id];
-      const a = anchors[id];
-      if (!g) return;
-      if (!a) {
-        g.visible = false;
-        return;
-      }
-      g.visible = true;
-      const d = DEPTH[id];
-      const base = a.size / (ppu * LOCAL_WIDTH[id]);
-      const bob = Math.sin(t * 0.8 + phase[id]) * 0.1;
-      const swing = Math.sin(t * 0.35 + phase[id]) * 0.4;
-
-      g.position.set(
-        (a.cx - size.width / 2) / ppu,
-        (size.height / 2 - a.cy) / ppu + bob - p * d.dy * UNITS_H,
-        p * d.dz,
-      );
-      g.scale.setScalar(base * (1 - p * d.dscale));
-      g.rotation.y = THREE.MathUtils.damp(g.rotation.y, swing + pt.x * d.mouse + p * d.rotY, 3, dt);
-      g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -pt.y * 0.22 + Math.sin(t * 0.27 + phase[id]) * 0.08, 3, dt);
-      g.rotation.z = THREE.MathUtils.damp(g.rotation.z, p * d.rotZ, 3, dt);
-    });
+    g.position.set(
+      (a.cx - size.width / 2) / ppu,
+      (size.height / 2 - a.cy) / ppu + bob - p * DEPTH.dy * UNITS_H,
+      p * DEPTH.dz,
+    );
+    g.scale.setScalar(base * (1 - p * DEPTH.dscale));
+    g.rotation.y = THREE.MathUtils.damp(g.rotation.y, swing + pt.x * DEPTH.mouse + p * DEPTH.rotY, 3, dt);
+    g.rotation.x = THREE.MathUtils.damp(g.rotation.x, -pt.y * 0.22 + Math.sin(t * 0.27) * 0.08, 3, dt);
+    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, p * DEPTH.rotZ, 3, dt);
   });
 
   return (
-    <>
-      <group ref={glyphRef}>
-        <Glyph />
-      </group>
-      <group ref={gamepadRef}>
-        <Gamepad />
-      </group>
-      <group ref={helmetRef}>
-        <Helmet />
-      </group>
-    </>
+    <group ref={glyphRef}>
+      <Glyph />
+    </group>
   );
 }
-
 export default function HeroScene({
   active,
   onReady,

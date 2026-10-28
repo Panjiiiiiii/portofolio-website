@@ -84,7 +84,7 @@ export function Hero({ cvHref }: { cvHref: string | null }) {
       aria-label="Home"
       className="relative flex min-h-[calc(100dvh-3.5rem-env(safe-area-inset-bottom))] flex-col overflow-hidden px-6 pt-24 pb-4 md:min-h-dvh md:px-12 md:pb-8"
     >
-      {/* Three floating objects (glyph, gamepad, helmet) over the top band of the hero */}
+      {/* One floating 3D glyph, the hero's one 3D statement */}
       <HeroObjects />
       <div className="relative mx-auto flex w-full max-w-[1440px] flex-1 flex-col justify-end">
         <div data-hero-copy className="relative z-10">

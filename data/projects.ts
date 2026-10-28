@@ -2,15 +2,17 @@
 // Text is supplied by the owner. Do not invent features, metrics or client names.
 //
 // To add a project:
-//  1. Put the screenshot at public/projects/<slug>/cover.webp (that file is the source of truth and is
-//     never overwritten), then run `npm run assets`. It writes the cropped frame.webp next to it.
+//  1. Put the screenshot at public/projects/<slug>/cover.webp (or cover.png / cover.jpg). That file is
+//     the source of truth and is never overwritten. Run `npm run assets`: it writes frame.webp next to it.
 //  2. Add an entry below, newest first.
 //  frame: "laptop" (websites) or "phone" (mobile apps). Every frame of a kind is identical.
 //         The pipeline crops the screenshot to the frame: laptop 1440x1024, phone 824x1830.
-//  focusY: where the crop window sits in the screenshot, 0 = top, 100 = bottom.
-//          Change it and run `npm run assets` to show a different part of a tall screenshot.
-//  trim:   optional { top, bottom } in pixels of cover.webp, cut before scaling. Use it to remove
-//          browser tabs, address bar, taskbar or clock.
+//          A screenshot that already has the frame's shape (within 1%) is only resized, never cropped.
+//  focusY: where the crop window sits when the screenshot is taller than the frame, 0 = top, 100 = bottom.
+//  focusX: optional, where it sits when the sides have to be cut, 0 = left, 100 = right (default 50).
+//          Change either and run `npm run assets` to show a different part of the screenshot.
+//  trim:   optional { top, bottom, left, right } in pixels of the source, cut before scaling. Use it to
+//          remove browser tabs, address bar, scrollbar, taskbar or clock.
 //  link: { type: "live", url } shows a button, { type: "repo", url } shows a button,
 //        { type: "private" } shows a "Private project" label with no button.
 
@@ -23,7 +25,8 @@ export type Project = {
   slug: string;
   frame: "laptop" | "phone";
   focusY: number;
-  trim?: { top: number; bottom: number };
+  focusX?: number;
+  trim?: { top?: number; bottom?: number; left?: number; right?: number };
   title: string;
   role: string;
   year: string;
@@ -61,7 +64,8 @@ export const projects: Project[] = [
     slug: "sidigs-app",
     frame: "laptop",
     focusY: 0,
-    trim: { top: 90, bottom: 50 }, // Chrome tabs + address bar, Windows taskbar + clock
+    focusX: 0, // keep the sidebar and the start of the table when the sides are cut
+    trim: { top: 88, bottom: 49, right: 16 }, // Chrome tabs + address bar, Windows taskbar + clock, scrollbar
     title: "Sidigs App",
     role: "Part-time Full-stack Developer",
     year: "2025 - 2026",

@@ -28,18 +28,28 @@ for (const { slug } of projects) {
     problems.push(`${slug}: frame.webp is missing`);
     continue;
   }
+  // The source the manifest was built from (cover.webp, cover.png or cover.jpg).
+  const coverName = entry.source ?? "cover.webp";
   try {
-    cover = await fs.readFile(path.join(dir, "cover.webp"));
+    cover = await fs.readFile(path.join(dir, coverName));
   } catch {
-    problems.push(`${slug}: cover.webp is missing`);
+    problems.push(`${slug}: ${coverName} is missing`);
     continue;
+  }
+  // A different cover format added next to it would be picked first by the pipeline.
+  for (const name of ["cover.webp", "cover.png", "cover.jpg"]) {
+    if (name === coverName) break;
+    try {
+      await fs.access(path.join(dir, name));
+      problems.push(`${slug}: ${name} exists but the manifest was built from ${coverName}`);
+    } catch {}
   }
   const meta = await sharp(frame).metadata();
   if (meta.width !== entry.width || meta.height !== entry.height) {
     problems.push(`${slug}: frame.webp is ${meta.width}x${meta.height}, manifest says ${entry.width}x${entry.height}`);
   }
   const hash = crypto.createHash("sha1").update(cover).digest("hex");
-  if (hash !== entry.sourceHash) problems.push(`${slug}: cover.webp hash does not match sourceHash`);
+  if (hash !== entry.sourceHash) problems.push(`${slug}: ${coverName} hash does not match sourceHash`);
 }
 
 if (problems.length) {

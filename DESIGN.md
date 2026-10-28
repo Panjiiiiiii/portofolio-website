@@ -6,12 +6,12 @@ Design Read: personal developer portfolio for hiring managers and freelance clie
 
 ## Direction in one sentence
 
-A dark, scroll-driven film of one developer's work: oversized NJOEL type, three floating 3D objects, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Projects carries the page.
+A dark, scroll-driven film of one developer's work: oversized NJOEL type, one floating 3D glyph, short manifesto-style copy, numbered chapters (01/07) and hairline rules, with every other surface kept quiet so the work in Projects carries the page.
 
 ## Why these dials
 
 - ENERGY 3: the portfolio is the product. The hero has to say hello loudly, once. Everything after it recedes.
-- RHYTHM 3: sections must not share one composition. Hero is oversized type with three floating 3D objects, About is an asymmetric photo and text split, Stack is a logo marquee over uneven cards, Projects is a pinned stage with one project per scroll step, Experience is a stepped timeline, Contact is a heatmap strip plus a large CTA, the footer is a parallax reveal.
+- RHYTHM 3: sections must not share one composition. Hero is oversized type with one floating 3D glyph, About is an asymmetric photo and text split, Stack is a logo marquee over uneven cards, Projects is a pinned stage with one project per scroll step, Experience is a stepped timeline, Contact is a heatmap strip plus a large CTA, the footer is a parallax reveal.
 - MOTION 3: the brief asks for cinematic. Max one signature motion per section, so choreography stays readable.
 
 ## Palette (tokens from the brief, not negotiable)
@@ -57,7 +57,7 @@ Two repeated gestures:
 
 - Tokens: durations 200 / 400 / 700ms only. Ease set: `power3.out` for entrances, `power2.inOut` for transitions, `expo.out` for kinetic type. Exits run at about 65% of the entrance.
 - One signature motion per section:
-  - Hero: kinetic NJOEL letter reveal, plus three floating 3D objects (the </> glyph, a gamepad, a racing helmet) in one canvas with scroll parallax at three depths.
+  - Hero: kinetic NJOEL letter reveal, plus one floating 3D glyph (`</>`) in one canvas with float, mouse parallax and scroll parallax (depth, rotation and scale).
   - About: portrait grayscale to color.
   - Stack: logos-only marquee.
   - Projects: a sticky stage, one project per scroll step, clip-reveal on a CSS 3D mockup with staggered text and a segmented progress line. Below 768px an accordion. Reduced motion: plain stacked blocks.

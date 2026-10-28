@@ -100,7 +100,7 @@ if (cvSrc) {
 
 /* ---------- Project frames ---------- */
 
-// Frame, focusY and trim come from data/projects.ts (Node strips the TypeScript types on import).
+// Frame, focusX/focusY and trim come from data/projects.ts (Node strips the TypeScript types on import).
 const { projects } = await import("../data/projects.ts");
 
 // Output size per frame kind. The screen of every frame of a kind has exactly this ratio.
@@ -109,74 +109,114 @@ const FRAME_SIZE = {
   phone: { width: 824, height: 1830 }, // 2x of a 412 x 915 Android screen
 };
 
-// Every project must have its cover.webp. Check all of them before writing anything.
+// The owner's source, one per project folder. The first one found is used.
+const COVER_NAMES = ["cover.webp", "cover.png", "cover.jpg"];
+
+async function findCover(slug) {
+  for (const name of COVER_NAMES) {
+    try {
+      await fs.access(out("projects", slug, name));
+      return name;
+    } catch {}
+  }
+  return null;
+}
+
+// Every project must have a cover. Check all of them before writing anything.
+const covers = {};
 const missing = [];
 for (const p of projects) {
-  try {
-    await fs.access(out("projects", p.slug, "cover.webp"));
-  } catch {
-    missing.push(p.slug);
-  }
+  const name = await findCover(p.slug);
+  if (name) covers[p.slug] = name;
+  else missing.push(p.slug);
 }
 if (missing.length) {
-  console.error(`ERROR: missing public/projects/<slug>/cover.webp for: ${missing.join(", ")}`);
+  console.error(
+    `ERROR: missing public/projects/<slug>/${COVER_NAMES.join(" | ")} for: ${missing.join(", ")}`,
+  );
   process.exit(1);
 }
 
+const clampPct = (v, fallback) => Math.min(100, Math.max(0, v ?? fallback));
 const report = [];
 
 for (const project of projects) {
   const { slug } = project;
-  const coverPath = out("projects", slug, "cover.webp");
-  const source = await fs.readFile(coverPath); // read only, never written
-  const meta = await sharp(source).metadata();
+  const coverName = covers[slug];
+  const source = await fs.readFile(out("projects", slug, coverName)); // read only, never written
+  const meta = await sharp(source).rotate().metadata();
+  const turned = (meta.orientation ?? 1) >= 5;
+  const fullW = turned ? meta.height : meta.width;
+  const fullH = turned ? meta.width : meta.height;
 
   const frame = project.frame ?? "laptop";
-  const focusY = Math.min(100, Math.max(0, project.focusY ?? 0));
-  const trimTop = Math.max(0, project.trim?.top ?? 0);
-  const trimBottom = Math.max(0, project.trim?.bottom ?? 0);
   const { width: W, height: H } = FRAME_SIZE[frame];
+  const focusX = clampPct(project.focusX, 50);
+  const focusY = clampPct(project.focusY, 0);
+  const t = {
+    top: Math.max(0, project.trim?.top ?? 0),
+    bottom: Math.max(0, project.trim?.bottom ?? 0),
+    left: Math.max(0, project.trim?.left ?? 0),
+    right: Math.max(0, project.trim?.right ?? 0),
+  };
 
-  const srcW = meta.width;
-  const srcH = meta.height - trimTop - trimBottom;
-  if (srcH <= 0) throw new Error(`${slug}: trim removes the whole image`);
+  // 1) Trim browser and OS chrome (pixels of the source) before anything is scaled.
+  const srcW = fullW - t.left - t.right;
+  const srcH = fullH - t.top - t.bottom;
+  if (srcW <= 0 || srcH <= 0) throw new Error(`${slug}: trim removes the whole image`);
+  let pipeline = sharp(source).rotate();
+  const trimmed = t.top || t.bottom || t.left || t.right;
+  if (trimmed) pipeline = pipeline.extract({ left: t.left, top: t.top, width: srcW, height: srcH });
 
-  // Trim browser/OS chrome first (pixels of the source), then scale and crop.
-  let pipeline = sharp(source);
-  if (trimTop || trimBottom) pipeline = pipeline.extract({ left: 0, top: trimTop, width: srcW, height: srcH });
-
-  const scaledH = Math.round((srcH * W) / srcW);
+  // 2) Fit the frame.
+  const ratioDiff = Math.abs(srcW / srcH / (W / H) - 1);
   let method;
-  let keptPct;
-  if (scaledH >= H) {
-    // Scale to the frame width, then cut a frame-tall window at focusY (0 = top, 100 = bottom).
-    const top = Math.round(((scaledH - H) * focusY) / 100);
-    pipeline = pipeline.resize({ width: W }).extract({ left: 0, top, width: W, height: H });
-    method = `window, focusY ${focusY} (top ${top}px)`;
-    keptPct = (H / scaledH) * 100;
+  let visibleW;
+  let visibleH;
+  if (ratioDiff <= 0.01) {
+    // Same shape as the frame (within 1%): resize only, no crop.
+    pipeline = pipeline.resize(W, H, { fit: "fill" });
+    method = "resize only (ratio within 1%)";
+    visibleW = 100;
+    visibleH = 100;
   } else {
-    // Too short for a window: fill the frame and crop the sides evenly.
-    pipeline = pipeline.resize(W, H, { fit: "cover", position: "centre" });
-    method = "center crop (cover), image shorter than the frame";
-    keptPct = (W / ((srcW * H) / srcH)) * 100;
+    // Scale so the image covers the frame, then cut the window at focusX / focusY.
+    const scale = Math.max(W / srcW, H / srcH);
+    const sw = Math.round(srcW * scale);
+    const sh = Math.round(srcH * scale);
+    const left = Math.round(((sw - W) * focusX) / 100);
+    const top = Math.round(((sh - H) * focusY) / 100);
+    pipeline = pipeline.resize(sw, sh).extract({ left, top, width: W, height: H });
+    visibleW = (W / sw) * 100;
+    visibleH = (H / sh) * 100;
+    method =
+      sw > W
+        ? `cover, sides cut at focusX ${focusX} (left ${left}px)`
+        : `cover, window at focusY ${focusY} (top ${top}px)`;
   }
 
   const info = await writeWebp(pipeline, out("projects", slug, "frame.webp"), 82);
-  manifest[slug] = { src: `/projects/${slug}/frame.webp`, ...info, sourceHash: sha1(source) };
-  const removedOfSource = 100 - (keptPct * srcH) / meta.height; // includes the trimmed rows
+  manifest[slug] = {
+    src: `/projects/${slug}/frame.webp`,
+    ...info,
+    source: coverName,
+    sourceHash: sha1(source),
+  };
+  const upscale = Math.max(W / srcW, H / srcH);
   report.push({
     slug,
     frame,
-    source: `${meta.width}x${meta.height}`,
-    trim: trimTop || trimBottom ? `top ${trimTop}, bottom ${trimBottom}` : "none",
+    source: `${fullW}x${fullH}`,
+    trim: trimmed ? `t${t.top} b${t.bottom} l${t.left} r${t.right}` : "none",
+    trimmed: `${srcW}x${srcH}`,
     output: `${info.width}x${info.height}`,
-    removed: `${removedOfSource.toFixed(1)}%`,
+    "width visible": `${visibleW.toFixed(1)}%`,
+    "height visible": `${visibleH.toFixed(1)}%`,
     method,
-    resolution: srcW < W ? "LOW RESOLUTION (upscaled), please retake" : "ok",
+    resolution: upscale > 1.001 ? `LOW RESOLUTION (upscaled ${upscale.toFixed(2)}x), please retake` : "ok",
   });
 }
 console.table(report);
-
 await fs.mkdir(path.join(root, "data"), { recursive: true });
 await fs.writeFile(path.join(root, "data", "image-manifest.json"), JSON.stringify(manifest, null, 2));
 console.log("manifest written");
