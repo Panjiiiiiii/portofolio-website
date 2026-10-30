@@ -5,8 +5,9 @@
 //  1. Put the screenshot at public/projects/<slug>/cover.webp (or cover.png / cover.jpg). That file is
 //     the source of truth and is never overwritten. Run `npm run assets`: it writes frame.webp next to it.
 //  2. Add an entry below, newest first.
-//  frame: "laptop" (websites) or "phone" (mobile apps). Every frame of a kind is identical.
-//         The pipeline crops the screenshot to the frame: laptop 1440x1024, phone 824x1830.
+//  frame: "laptop" or "monitor" (websites) or "phone" (mobile apps). Every frame of a kind is identical.
+//         The pipeline fits the screenshot to the frame size in data/frames.ts:
+//         laptop 1440x1024, phone 824x1830, monitor 1920x1080.
 //          A screenshot that already has the frame's shape (within 1%) is only resized, never cropped.
 //  focusY: where the crop window sits when the screenshot is taller than the frame, 0 = top, 100 = bottom.
 //  focusX: optional, where it sits when the sides have to be cut, 0 = left, 100 = right (default 50).
@@ -16,6 +17,8 @@
 //  link: { type: "live", url } shows a button, { type: "repo", url } shows a button,
 //        { type: "private" } shows a "Private project" label with no button.
 
+import type { FrameKind } from "./frames.ts";
+
 export type ProjectLink =
   | { type: "live"; url: string }
   | { type: "repo"; url: string }
@@ -23,7 +26,7 @@ export type ProjectLink =
 
 export type Project = {
   slug: string;
-  frame: "laptop" | "phone";
+  frame: FrameKind;
   focusY: number;
   focusX?: number;
   trim?: { top?: number; bottom?: number; left?: number; right?: number };
@@ -62,10 +65,9 @@ export const projects: Project[] = [
   },
   {
     slug: "sidigs-app",
-    frame: "laptop",
+    frame: "monitor",
     focusY: 0,
-    focusX: 0, // keep the sidebar and the start of the table when the sides are cut
-    trim: { top: 88, bottom: 49, right: 16 }, // Chrome tabs + address bar, Windows taskbar + clock, scrollbar
+    trim: { right: 15 }, // page scrollbar (columns 1905-1919 of the 1920x1080 capture)
     title: "Sidigs App",
     role: "Part-time Full-stack Developer",
     year: "2025 - 2026",

@@ -1,4 +1,5 @@
 import Image from "next/image";
+import type { FrameKind } from "@/data/frames";
 import type { ProjectItem } from "@/lib/images";
 
 type Props = ProjectItem & {
@@ -7,17 +8,19 @@ type Props = ProjectItem & {
 };
 
 // Display widths of the screen, used for the responsive srcset.
-const SIZES = {
+const SIZES: Record<FrameKind, string> = {
   laptop: "(min-width: 1024px) 660px, (min-width: 768px) 55vw, 90vw",
+  monitor: "(min-width: 1024px) 640px, (min-width: 768px) 55vw, 90vw",
   phone: "(min-width: 768px) 240px, 45vw",
-} as const;
+};
 
 /**
  * One screenshot in a CSS-only device frame. No images, no brand marks, no second WebGL context.
- * - laptop: every website gets the same laptop; the screen is exactly 1440 / 1024.
+ * - laptop: the same laptop for those websites; the screen is exactly 1440 / 1024.
+ * - monitor: a desktop monitor on a stand; the screen is exactly 1920 / 1080.
  * - phone: an Android-style phone (punch-hole camera, side buttons); the screen is 412 / 915.
- * Both frames take their height from the same --pj-h (globals.css), so the stage does not jump.
- * The screenshot is pre-cropped to the screen ratio by `npm run assets`; it is never edited.
+ * All frames take their height from the same --pj-h (globals.css), so the stage does not jump.
+ * Screen sizes come from data/frames.ts, and `npm run assets` fits each screenshot to them.
  */
 export function ProjectMockup({ project, image, eager = false }: Props) {
   const kind = project.frame;
@@ -45,7 +48,7 @@ export function ProjectMockup({ project, image, eager = false }: Props) {
     <div className="pj-device-wrap">
       <div className="pj-persp">
         <div className="pj-tilt" data-pj-tilt>
-          {kind === "laptop" ? (
+          {kind === "laptop" && (
             <div className="pj-device pj-laptop">
               <div className="pj-lid">
                 <span className="pj-cam" aria-hidden />
@@ -53,7 +56,18 @@ export function ProjectMockup({ project, image, eager = false }: Props) {
               </div>
               <div className="pj-base" aria-hidden />
             </div>
-          ) : (
+          )}
+          {kind === "monitor" && (
+            <div className="pj-device pj-monitor">
+              <div className="pj-mon-panel">
+                <div className="pj-mon-screen">{picture}</div>
+                <span className="pj-mon-led" aria-hidden />
+              </div>
+              <div className="pj-mon-neck" aria-hidden />
+              <div className="pj-mon-foot" aria-hidden />
+            </div>
+          )}
+          {kind === "phone" && (
             <div className="pj-device pj-phone">
               <span className="pj-btn pj-btn-power" aria-hidden />
               <span className="pj-btn pj-btn-volume" aria-hidden />

@@ -103,11 +103,10 @@ if (cvSrc) {
 // Frame, focusX/focusY and trim come from data/projects.ts (Node strips the TypeScript types on import).
 const { projects } = await import("../data/projects.ts");
 
-// Output size per frame kind. The screen of every frame of a kind has exactly this ratio.
-const FRAME_SIZE = {
-  laptop: { width: 1440, height: 1024 },
-  phone: { width: 824, height: 1830 }, // 2x of a 412 x 915 Android screen
-};
+// Output size per frame kind: one table in data/frames.ts, shared with check-assets and the components.
+const { FRAME_SIZE } = await import("../data/frames.ts");
+// WebP quality per frame kind. The monitor output is larger, so it is encoded a little lower.
+const FRAME_QUALITY = { laptop: 82, phone: 82, monitor: 80 };
 
 // The owner's source, one per project folder. The first one found is used.
 const COVER_NAMES = ["cover.webp", "cover.png", "cover.jpg"];
@@ -150,6 +149,7 @@ for (const project of projects) {
   const fullH = turned ? meta.width : meta.height;
 
   const frame = project.frame ?? "laptop";
+  if (!FRAME_SIZE[frame]) throw new Error(`${slug}: unknown frame "${frame}" (see data/frames.ts)`);
   const { width: W, height: H } = FRAME_SIZE[frame];
   const focusX = clampPct(project.focusX, 50);
   const focusY = clampPct(project.focusY, 0);
@@ -195,10 +195,11 @@ for (const project of projects) {
         : `cover, window at focusY ${focusY} (top ${top}px)`;
   }
 
-  const info = await writeWebp(pipeline, out("projects", slug, "frame.webp"), 82);
+  const info = await writeWebp(pipeline, out("projects", slug, "frame.webp"), FRAME_QUALITY[frame] ?? 82);
   manifest[slug] = {
     src: `/projects/${slug}/frame.webp`,
     ...info,
+    frame,
     source: coverName,
     sourceHash: sha1(source),
   };

@@ -296,6 +296,52 @@ html {
   transform: translateX(-50%);
 }
 
+/* Desktop monitor: screen exactly 1920 / 1080, thin near-black bezel with a thicker bottom chin,
+   a short neck and a flat foot. Total height = --pj-h (same box as the laptop); the width is
+   capped by the column so it never overflows. The one accent is a tiny power LED in the chin. */
+.pj-monitor {
+  --mon-neck: calc(var(--pj-h) * 0.085);
+  --mon-foot: 7px;
+  --mon-w: min(calc((var(--pj-h) - var(--mon-neck) - var(--mon-foot) - 26px) * 1920 / 1080 + 18px), 100cqw);
+  width: var(--mon-w);
+}
+.pj-mon-panel {
+  position: relative;
+  padding: 8px 8px 16px;
+  border: 1px solid var(--color-line);
+  border-radius: 6px;
+  background: #0c0c0f;
+}
+.pj-mon-screen {
+  aspect-ratio: 1920 / 1080;
+  overflow: hidden;
+  background: #000;
+}
+.pj-mon-led {
+  position: absolute;
+  right: 14px;
+  bottom: 6px;
+  width: 4px;
+  height: 4px;
+  border-radius: 9999px;
+  background: var(--color-accent);
+}
+.pj-mon-neck {
+  width: 11%;
+  height: var(--mon-neck);
+  margin-inline: auto;
+  border-inline: 1px solid var(--color-line);
+  background: #1b1b21;
+}
+.pj-mon-foot {
+  width: 34%;
+  height: var(--mon-foot);
+  margin-inline: auto;
+  border: 1px solid var(--color-line);
+  border-radius: 4px 4px 2px 2px;
+  background: #1b1b21;
+}
+
 /* Android phone: screen 412 / 915, uniform bezel, punch-hole camera, power and volume on the right.
    No notch, no island, no home bar. */
 .pj-phone {
