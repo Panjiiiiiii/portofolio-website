@@ -12,7 +12,7 @@ import { SiteNav } from "@/components/ui/SiteNav";
 import { socials } from "@/data/contact";
 import { getCvHref } from "@/lib/cv";
 import { siteUrl } from "@/lib/site";
-
+import { Analytics } from "@vercel/analytics/next"
 // Regenerate the static page every 6 hours so GitHub data stays fresh.
 export const revalidate = 21600;
 
@@ -34,6 +34,7 @@ const personJsonLd = {
 export default function Home() {
   return (
     <PageReadyProvider>
+      <Analytics/>
       <SmoothScroll>
         <script
           type="application/ld+json"
